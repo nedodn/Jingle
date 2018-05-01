@@ -7,11 +7,33 @@ var UI = function() {
 
     var scope = this;
 
+    scope.NotePicker = new EM.NotePicker();
+    scope.Sequencer = new EM.Sequencer();
+
+    scope.NotePicker.setRequired( false );
+    scope.Sequencer.setRequired( true );
+
+    scope.currentEditor = scope.Sequencer;
+
     scope.init();
 
 };
 
 UI.prototype = {
+
+    /**
+     * Music writing
+     */
+
+    NotePicker: null,
+    Sequencer: null,
+
+    currentEditor: null,
+
+
+    /**
+     * Page naviagtion
+     */
 
     splashId: "splash",
     splashDiv: null,

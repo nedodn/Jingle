@@ -12,6 +12,8 @@ var app = Express();
 
 var Config = require( "./Config.js" );
 
+var Midi = require( "./Midi.js" );
+
 
 //Templater
 
@@ -30,7 +32,11 @@ app.use( "/node_modules", Express.static( __dirname + "/../app/node_modules" ) )
 
 function indexPage( req, res ) {
 
-    var content = Templater.getTemplate( "index.html" );
+    var vars = {
+        Midi: Midi
+    };
+
+    var content = Templater.getTemplate( "index.html", vars );
 
     res.send( content );
 
