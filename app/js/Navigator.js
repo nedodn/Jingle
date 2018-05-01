@@ -21,6 +21,12 @@ var Navigator = function( App ) {
         method = method.split( "/" );
         method = method[ method.length - 1 ];
 
+        if( method === "" ) {
+
+            method = "splash";
+
+        }
+
         console.log( method );
 
         App.UI.showPage( method );
@@ -48,5 +54,10 @@ var Navigator = function( App ) {
         }
 
     };
+
+
+    //Init route
+
+    scope.route( window.location.href );
 
 };

@@ -19,6 +19,12 @@ UI.prototype = {
     creatorId: "creator",
     creatorDiv: null,
 
+    exploreId: "explore",
+    exploreDiv: null,
+
+    composersId: "composers",
+    composersDiv: null,
+
     currentPage: null,
 
     pages: {},
@@ -34,14 +40,20 @@ UI.prototype = {
 
         scope.splashDiv = document.getElementById( scope.splashId );
         scope.creatorDiv = document.getElementById( scope.creatorId );
+        scope.exploreDiv = document.getElementById( scope.exploreId );
+        scope.composersDiv = document.getElementById( scope.composersId );
 
         scope.creatorDiv.style.display = "none";
+        scope.exploreDiv.style.display = "none";
+        scope.composersDiv.style.display = "none";
 
         scope.currentPage = scope.splashDiv;
 
         scope.pages = {
             "create": scope.creatorDiv,
-            "splash": scope.splashDiv
+            "splash": scope.splashDiv,
+            "explore": scope.exploreDiv,
+            "composers": scope.composersDiv,
         };
 
     },

@@ -28,23 +28,18 @@ app.use( "/node_modules", Express.static( __dirname + "/../app/node_modules" ) )
 //Express setup
 
 
-function indexPage() {
+function indexPage( req, res ) {
 
-    return Templater.getTemplate( "index.html" );
+    var content = Templater.getTemplate( "index.html" );
+
+    res.send( content );
 
 }
 
-app.get( "/", function( req, res ) {
-
-    res.send( indexPage() );
-
-});
-
-app.get( "/explore", function( req, res ) {
-
-    res.send( indexPage() );
-
-});
+app.get( "/", indexPage );
+app.get( "/explore", indexPage );
+app.get( "/create", indexPage );
+app.get( "/composers", indexPage );
 
 app.get( "/accounts/{address}", function( req, res ) {
 
