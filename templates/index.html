@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport" content="width=device-width">
+
+        <title>Jingle</title>
+
+        <link href="./node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="./css/app.css" rel="stylesheet" type="text/css">
+
+    </head>
+
+    <body>
+
+        {% include "header.html" %}
+
+        <div id="app">
+
+            <div id="splash">
+                {% include "splash.html" %}
+            </div>
+
+            <div id="creator">
+                {% include "creator.html" %}
+            </div>
+
+        </div>
+
+        <script src="./js/Networks.js"></script>
+        <script src="./js/UI.js"></script>
+        <script src="./js/Navigator.js"></script>
+        <script src="./js/App.js"></script>
+        <script src="./js/Main.js"></script>
+
+    </body>
+
+</html>

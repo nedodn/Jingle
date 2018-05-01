@@ -1,0 +1,41 @@
+/**
+ * Global
+ */
+a {
+    cursor: pointer;
+}
+
+/**
+ * Header
+ */
+
+#header {
+    padding: 5px;
+    border-bottom: solid 2px #DF0000;
+}
+
+#network-section {
+    color: #28a745;
+}
+
+#header-links a {
+    padding: 10px;
+    background: #000;
+    color: #DF0000;
+    top: 1em;
+    position: relative;
+}
+
+#header-links a:hover {
+    text-decoration: none;
+    background: #DF0000;
+    color: #000;
+}
+
+#header-info {
+    text-align: right;
+}
+
+#header-info p {
+    margin: 0;
+}
