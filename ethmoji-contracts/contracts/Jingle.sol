@@ -120,6 +120,19 @@ contract Jingle is Composable {
         return SYMBOL;
     }
 
+    /**
+    * @dev gets a melody for a composition
+     */
+    function getMelody(uint256 _id) external view returns (int8[] _pitches, uint256[] _startTimes, uint256[] _durations) {
+        note[] memory melody = tokenIdToMelody[_id].melody;
+
+        for (uint256 i = 0; i < melody.length; ++i) {
+            _pitches.push(melody[i].pitch);
+            _startTimes.push(melody[i].startTime);
+            _durations.push(melody[i].duration);
+        }
+    }
+
 // ----- PRIVATE FUNCTIONS ------------------------------------------------------------------------
 
     /**
