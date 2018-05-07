@@ -1,5 +1,5 @@
-const Jingle = artifacts.require("./contract/Jingle.sol");
+const Jingle = artifacts.require("./contracts/Jingle.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Jingle, {gas: 6721975});
+  deployer.deploy(Jingle);
 };

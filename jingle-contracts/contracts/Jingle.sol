@@ -99,7 +99,6 @@ contract Jingle is Composable {
 
         //mint base melody
         _id = Composable.mintTo(msg.sender, _compositionPrice, _melodyHash);
-        // tokenIdToMelody[_id] = _melody;
 
         return _id;
     }
@@ -110,7 +109,7 @@ contract Jingle is Composable {
     * @dev returns the name Jingle
     * @return string Jingle
     */
-    function name() public pure returns (string) {
+    function name() public view returns (string) {
         return NAME;
     }
 
@@ -118,7 +117,7 @@ contract Jingle is Composable {
     * @dev returns the name JING
     * @return string JING
     */
-    function symbol() public pure returns (string) {
+    function symbol() public view returns (string) {
         return SYMBOL;
     }
 
