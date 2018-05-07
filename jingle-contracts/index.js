@@ -1,3 +1,3 @@
-const Ethmoji = require("./build/contracts/Ethmoji.json");
+const Jingle = require("./build/contracts/Jingle.json");
 
-module.exports.Ethmoji = Ethmoji;
+module.exports.Jingle = Jingle;
