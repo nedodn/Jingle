@@ -15,27 +15,24 @@ contract Jingle is Composable {
 
     string public constant NAME = "Jingle";
     string public constant SYMBOL = "JING";
-    uint256 public constant MAXDURATION;
-    uint256 public constant REGISTRAIONFEE;
+    uint256 public MAXDURATION;
+    uint256 public constant REGISTRATIONFEE = 0.01 ether;
     address beneficiary;
     uint256 fees;
 
-    struct note {
-        int8 pitch;
-        uint256 startTime;
-        uint256 duration;
-    }
-
-    struct Melody {
-        note[] melody;
+    modifier checkArguments(int8[] pitches,  uint256[] startTimes, uint256[] durations) {
+        require(pitches.length == startTimes.length && pitches.length == durations.length);
+        require (pitches[0] == 100);
+        uint256 last = startTimes.length - 1;
+        require(startTimes[last] + durations[last] <= MAXDURATION);
+        _;
     }
     
     function initialize(address newOwner, uint256 maxDuration, address _beneficiary) public {
         require(!_initialized);
         isCompositionOnlyWithBaseLayers = true;
-        REGISTRATIONFEE = .001 ether;
         MAXDURATION = maxDuration;
-        beneficiary = _beneficary;
+        beneficiary = _beneficiary;
         owner = newOwner;
         _initialized = true;
         isCompositionOnlyWithBaseLayers = true;
@@ -44,16 +41,35 @@ contract Jingle is Composable {
     /**
     * @dev Mints a base melody
     */
-    function composeBaseMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice, uint256 _changeRate,  bool _changeableCompPrice) public payable whenNotPaused returns(uint256) {
-        require(pitches.length == startTimes.length == durations.length);
-        //first pitch will always be 100 to keep track of pitch movements
-        require(pitches[0] == 100);
-        //make sure the last note does not go past the maximum length
-        require(startTimes[startTimes.length-1] + durations[durations.length-1] <= MAXDURATION);
+    function composeBaseMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) checkArguments(pitches, startTimes, durations) public payable whenNotPaused returns(uint256) {
         //must pay registration fee
         require(msg.value >= REGISTRATIONFEE);
 
-        Melody memory _melody;
+        uint256 _id = createMelody(pitches, startTimes, durations, _compositionPrice);
+
+        fees = fees.add(REGISTRATIONFEE);
+
+        return _id;
+    }
+
+    function composeComposition(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256[] _tokenIds, uint256 _compositionPrice, bytes32 _melodyHash) public payable whenNotPaused {
+        //mint base melody with any added notes
+        uint256 newId = composeBaseMelody(pitches, startTimes, durations, _compositionPrice);
+
+        uint256[] memory newTokenIds = _tokenIds;
+        newTokenIds[newTokenIds.length] = newId;
+
+        //compose composition melody
+        Composable.compose(newTokenIds, _melodyHash);
+
+        // Immediately pay out to layer owners
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            _withdrawTo(ownerOf(_tokenIds[i]));
+        }
+    }
+
+    function createMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) internal returns (uint256) {
+        uint256 _id = _getNextTokenId();
 
         //variable to keep track of the last notes start time
         uint256 lastStart = 0;
@@ -64,42 +80,28 @@ contract Jingle is Composable {
             if (startTimes[i] == lastStart) {
                 require(pitches[i] > lastPitch);
             }
+            int8 _pitch = pitches[i];
+            uint256 _startTime = startTimes[i];
+            uint256 _duration = durations[i];
             note memory _note = note({
-                pitch: pitches[i], 
-                startTime: startTimes[i], 
-                duration: durations[i]
+                pitch: _pitch, 
+                startTime: _startTime, 
+                duration: _duration
             });
 
-            _melody.melody.push(_note);
+            tokenIdToMelody[_id].melody.push(_note);
 
             lastStart = startTimes[i];
             lastPitch = pitches[i];
         }
 
+        bytes32 _melodyHash = keccak256(pitches, startTimes, durations);
+
         //mint base melody
-        uint256 _id = Composable.mintTo(msg.sender, _compositionPrice, _changeRate, _changeableCompPrice, keccack256(_melody));
-
-        tokenIdToMelody[_id] = _melody;
-
-        fees = fees.add(REGISTRATIONFEE);
+        _id = Composable.mintTo(msg.sender, _compositionPrice, _melodyHash);
+        // tokenIdToMelody[_id] = _melody;
 
         return _id;
-    }
-
-    function composeComposition(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256[] _tokenIds, uint256 _compositionPrice, uint256 _changeRate,  bool _changeableCompPrice, bytes32 _melodyHash) public payable whenNotPaused {
-        //mint base melody with any added notes
-        uint256 newId = composeBaseMelody(pitches, startTimes, durations, _compositionPrice, _changeRate, _changeableCompPrice);
-
-        uint256[] memory newTokenIds = _tokenIds;
-        newTokenIds.push(newId);
-
-        //compose composition melody
-        Composable.compose(newTokenIds, _melodyHash);
-
-        // Immediately pay out to layer owners
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            _withdrawTo(ownerOf(_tokenIds[i]));
-        }
     }
 
 // ----- EXPOSED METHODS --------------------------------------------------------------------------
@@ -127,9 +129,9 @@ contract Jingle is Composable {
         note[] memory melody = tokenIdToMelody[_id].melody;
 
         for (uint256 i = 0; i < melody.length; ++i) {
-            _pitches.push(melody[i].pitch);
-            _startTimes.push(melody[i].startTime);
-            _durations.push(melody[i].duration);
+            _pitches[i] = melody[i].pitch;
+            _startTimes[i] = melody[i].startTime;
+            _durations[i] = melody[i].duration;
         }
     }
 
@@ -149,7 +151,7 @@ contract Jingle is Composable {
         }
     }
 
-    function withdraw(address beneficiary) public onlyOwner {
+    function withdraw() public onlyOwner {
         beneficiary.transfer(fees);
     }
 }

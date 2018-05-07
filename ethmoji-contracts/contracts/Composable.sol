@@ -15,7 +15,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     // Max number of layers for a composition token
     uint public constant MAX_LAYERS = 100;
-    // The minimum composition fee for an ethmoji
+    // The minimum composition fee for a melody
     uint256 public minCompositionFee;
 
     struct note {
@@ -36,12 +36,12 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     mapping (uint256 => bool) public tokenIdToCompPricePermission;
     // Mapping from token ID to layers representing it
     mapping (uint256 => uint256[]) public tokenIdToLayers;
-    // Hash of all layers to track uniqueness of ethmojis
+    // Hash of all layers to track uniqueness of melodys
     mapping (bytes32 => bool) public compositions;
-    // Image hashes to track uniquenes of ethmoji images.
+    // Image hashes to track uniquenes of melody images.
     mapping (bytes32 => bool) public melodyHashes;
 
-    mapping (uint => Melody) public tokenIdToMelody;
+    mapping (uint => Melody) internal tokenIdToMelody;
 
     // Event for emitting new base token created 
     event BaseTokenCreated(uint256 tokenId); 
@@ -61,11 +61,9 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @dev Mints a base token to an address with a given composition price
     * @param _to address of the future owner of the token
     * @param _compositionPrice uint256 composition price for the new token
-    * @param _changeRate uint256 the rate at which comp price increases after every use
-    * @param _changeableCompPrice bool whether or not the comp price can be changed
     * @param _melodyHash uint256 hash of the resulting image
     */
-    function mintTo(address _to, uint256 _compositionPrice, uint256 _changeRate,  bool _changeableCompPrice, bytes32 _melodyHash) internal {
+    function mintTo(address _to, uint256 _compositionPrice, bytes32 _melodyHash) internal returns (uint256) {
         uint256 newTokenIndex = _getNextTokenId();
         _mint(_to, newTokenIndex);
         tokenIdToLayers[newTokenIndex] = [newTokenIndex];
@@ -74,15 +72,17 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
         melodyHashes[_melodyHash] = true;      
         emit BaseTokenCreated(newTokenIndex);
         _setCompositionPrice(newTokenIndex, _compositionPrice);
-        _setCompositionPriceChangeRate(newTokenIndex, _changeRate);
-        _setCompositionPriceChangePermission(newTokenIndex, _changeableCompPrice);
+        // _setCompositionPriceChangeRate(newTokenIndex, _changeRate);
+        // _setCompositionPriceChangePermission(newTokenIndex, _changeableCompPrice);
+
+        return newTokenIndex;
     }
 
     /**
-    * @dev Mints a composition emoji
+    * @dev Mints a composition melody
     * @param _tokenIds uint256[] the array of layers that will make up the composition
     */
-    function compose(uint256[] _tokenIds,  bytes32 _melodyHash) internal payable whenNotPaused {
+    function compose(uint256[] _tokenIds,  bytes32 _melodyHash) internal whenNotPaused {
         require(_tokenIds.length > 1);
         uint256 price = getTotalCompositionPrice(_tokenIds);
         require(msg.sender != address(0) && msg.value >= price);
@@ -152,7 +152,7 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @param _tokenIds uint256[] an array of token IDs
     * @return bool whether or not the composition is unique
     */
-    function isValidComposition(uint256[] _tokenIds, uint256 _melodyHash) public view returns (bool) { 
+    function isValidComposition(uint256[] _tokenIds, bytes32 _melodyHash) public view returns (bool) { 
         if (isCompositionOnlyWithBaseLayers) { 
             return _isValidBaseLayersOnly(_tokenIds, _melodyHash);
         } else { 
@@ -206,7 +206,7 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @param _tokenIds uint256[] an array of token IDs
     * @return bool whether or not the composition is unique
     */
-    function _isValidBaseLayersOnly(uint256[] _tokenIds, uint256 _melodyHash) private view returns (bool) { 
+    function _isValidBaseLayersOnly(uint256[] _tokenIds, bytes32 _melodyHash) private view returns (bool) { 
         require(_tokenIds.length <= MAX_LAYERS);
         uint256[] memory layers = new uint256[](_tokenIds.length);
 
@@ -240,7 +240,7 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @param _tokenIds uint256[] an array of token IDs
     * @return bool whether or not the composition is unique
     */
-    function _isValidWithCompositions(uint256[] _tokenIds, uint256 _melodyHash) private view returns (bool) { 
+    function _isValidWithCompositions(uint256[] _tokenIds, bytes32 _melodyHash) private view returns (bool) { 
         uint256[] memory layers = new uint256[](MAX_LAYERS);
         uint actualSize = 0; 
         if (_tokenIds.length > MAX_LAYERS) { 
@@ -328,7 +328,7 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @dev calculates the next token ID based on totalSupply
     * @return uint256 for the next token ID
     */
-    function _getNextTokenId() private view returns (uint256) {
+    function _getNextTokenId() internal view returns (uint256) {
         return totalSupply().add(1); 
     }
 
@@ -339,7 +339,7 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @param _melodyHash uint256 image hash for the composition
     * @return bool whether or not the composition is unique
     */
-    function _isUnique(uint256[] _layers, uint256 _melodyHash) private view returns (bool) { 
+    function _isUnique(uint256[] _layers, bytes32 _melodyHash) private view returns (bool) { 
         return compositions[keccak256(_layers)] == false && melodyHashes[_melodyHash] == false;
     }
 
