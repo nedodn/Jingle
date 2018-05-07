@@ -14,7 +14,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     // Max number of layers for a composition token
-    uint public constant MAX_LAYERS = 100;
+    uint public constant MAX_LAYERS = 10;
     // The minimum composition fee for a melody
     uint256 public minCompositionFee;
 
