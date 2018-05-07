@@ -16,12 +16,11 @@ contract Jingle is Composable {
     string public constant NAME = "Jingle";
     string public constant SYMBOL = "JING";
     uint256 public MAXDURATION;
-    uint256 public constant REGISTRATIONFEE = 0.01 ether;
     address beneficiary;
     uint256 fees;
 
     modifier checkArguments(int8[] pitches,  uint256[] startTimes, uint256[] durations) {
-        require(pitches.length == startTimes.length && pitches.length == durations.length);
+        require(pitches.length == startTimes.length && pitches.length == durations.length && pitches.length < 100);
         require (pitches[0] == 100);
         uint256 last = startTimes.length - 1;
         require(startTimes[last] + durations[last] <= MAXDURATION);
@@ -32,10 +31,10 @@ contract Jingle is Composable {
         require(!_initialized);
         isCompositionOnlyWithBaseLayers = true;
         MAXDURATION = maxDuration;
+        minCompositionFee = 0.01 ether;
         beneficiary = _beneficiary;
         owner = newOwner;
         _initialized = true;
-        isCompositionOnlyWithBaseLayers = true;
     }
 
     /**
@@ -43,11 +42,11 @@ contract Jingle is Composable {
     */
     function composeBaseMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) checkArguments(pitches, startTimes, durations) public payable whenNotPaused returns(uint256) {
         //must pay registration fee
-        require(msg.value >= REGISTRATIONFEE);
+        require(msg.value >= minCompositionFee);
 
         uint256 _id = createMelody(pitches, startTimes, durations, _compositionPrice);
 
-        fees = fees.add(REGISTRATIONFEE);
+        fees = fees.add(minCompositionFee);
 
         return _id;
     }
@@ -78,6 +77,7 @@ contract Jingle is Composable {
             //make sure a later note does not come before a previous note - this is mostly for checking uniqueness rather than actual organization
             require(startTimes[i] >= lastStart);
             if (startTimes[i] == lastStart) {
+                //make sure pitches with the same Start Time are sorted in ascending order
                 require(pitches[i] > lastPitch);
             }
             int8 _pitch = pitches[i];

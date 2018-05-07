@@ -14,7 +14,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
 contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     // Max number of layers for a composition token
-    uint public constant MAX_LAYERS = 100;
+    uint public constant MAX_LAYERS = 10;
     // The minimum composition fee for a melody
     uint256 public minCompositionFee;
 
@@ -30,10 +30,6 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
 
     // Mapping from token ID to composition price
     mapping (uint256 => uint256) public tokenIdToCompositionPrice;
-    // Mapping from token ID to composition price increase 
-    mapping (uint256 => uint256) public tokenIdToCompositionPriceChangeRate;
-    // Mapping from token ID to owner ability of changing composition price increase 
-    mapping (uint256 => bool) public tokenIdToCompPricePermission;
     // Mapping from token ID to layers representing it
     mapping (uint256 => uint256[]) public tokenIdToLayers;
     // Hash of all layers to track uniqueness of melodys
@@ -72,8 +68,6 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
         melodyHashes[_melodyHash] = true;      
         emit BaseTokenCreated(newTokenIndex);
         _setCompositionPrice(newTokenIndex, _compositionPrice);
-        // _setCompositionPriceChangeRate(newTokenIndex, _changeRate);
-        // _setCompositionPriceChangePermission(newTokenIndex, _changeableCompPrice);
 
         return newTokenIndex;
     }
@@ -113,7 +107,6 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
             require(ownerOf(compositionLayerId) != address(0));
             asyncSend(ownerOf(compositionLayerId), tokenIdToCompositionPrice[compositionLayerId]);
             emit RoyaltiesPaid(compositionLayerId, tokenIdToCompositionPrice[compositionLayerId], ownerOf(compositionLayerId));
-            tokenIdToCompositionPrice[compositionLayerId] = tokenIdToCompositionPrice[compositionLayerId].add(tokenIdToCompositionPriceChangeRate[compositionLayerId]);
         }
     
         uint256 newTokenIndex = _getNextTokenId();
@@ -193,7 +186,6 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
     * @param _price uint256 the new composition price
     */
     function setCompositionPrice(uint256 _tokenId, uint256 _price) public onlyOwnerOf(_tokenId) {
-        require(tokenIdToCompPricePermission[_tokenId] == true);
         _setCompositionPrice(_tokenId, _price);
     }
 
@@ -304,24 +296,6 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
         require(_price >= minCompositionFee);
         tokenIdToCompositionPrice[_tokenId] = _price;
         emit CompositionPriceChanged(_tokenId, _price, msg.sender);
-    }
-
-    /**
-    * @dev set composition price increase rate a token
-    * @param _tokenId uint256 token ID
-    * @param _changeRate uint256 composition price change rate
-    */
-    function _setCompositionPriceChangeRate(uint256 _tokenId, uint256 _changeRate) private {
-        tokenIdToCompositionPriceChangeRate[_tokenId] = _changeRate;
-    }
-
-    /**
-    * @dev set permission to change comp price in the future
-    * @param _tokenId uint256 token ID
-    * @param _canChange bool whether or not the composition price can be manually changed
-    */
-    function _setCompositionPriceChangePermission(uint256 _tokenId, bool _canChange) private {
-        tokenIdToCompPricePermission[_tokenId] = _canChange;
     }
 
     /**
