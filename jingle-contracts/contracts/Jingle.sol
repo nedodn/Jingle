@@ -40,30 +40,33 @@ contract Jingle is Composable {
     /**
     * @dev Mints a base melody
     */
-    function composeBaseMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) checkArguments(pitches, startTimes, durations) public payable whenNotPaused returns(uint256) {
+    function composeBaseMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) checkArguments(pitches, startTimes, durations) public payable whenNotPaused {
         //must pay registration fee
         require(msg.value >= minCompositionFee);
 
         uint256 _id = createMelody(pitches, startTimes, durations, _compositionPrice);
 
         fees = fees.add(minCompositionFee);
-
-        return _id;
     }
 
     function composeComposition(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256[] _tokenIds, uint256 _compositionPrice, bytes32 _melodyHash) public payable whenNotPaused {
         //mint base melody with any added notes
-        uint256 newId = composeBaseMelody(pitches, startTimes, durations, _compositionPrice);
+        uint256 newId = _getNextTokenId();
+        composeBaseMelody(pitches, startTimes, durations, _compositionPrice);
 
-        uint256[] memory newTokenIds = _tokenIds;
-        newTokenIds[newTokenIds.length] = newId;
+        uint256[] memory newTokenIds = new uint256[](_tokenIds.length + 1);
+        
+        for (uint256 i = 0; i < _tokenIds.length; ++i) {
+            newTokenIds[i] = _tokenIds[i];
+        }
+        newTokenIds[newTokenIds.length - 1] = newId;
 
         //compose composition melody
         Composable.compose(newTokenIds, _melodyHash);
 
         // Immediately pay out to layer owners
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            _withdrawTo(ownerOf(_tokenIds[i]));
+        for (uint256 x = 0; x < _tokenIds.length; x++) {
+            _withdrawTo(ownerOf(_tokenIds[x]));
         }
     }
 
@@ -78,7 +81,9 @@ contract Jingle is Composable {
             require(startTimes[i] >= lastStart);
             if (startTimes[i] == lastStart) {
                 //make sure pitches with the same Start Time are sorted in ascending order
-                require(pitches[i] > lastPitch);
+                if(lastPitch != 100) {
+                    require(pitches[i] > lastPitch);
+                }
             }
             int8 _pitch = pitches[i];
             uint256 _startTime = startTimes[i];
