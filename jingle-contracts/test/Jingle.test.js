@@ -96,5 +96,11 @@ contract('Jingle', (accounts) => {
         it('should let you create a composition', async () => {
             await jingle.composeComposition([100], [1], [2], [1, 2, 3, 4, 5], min, web3.sha3('hash'), { value: (min * 7) } ).should.be.fulfilled
         })
+
+        it('cannot copy a composition', async () => {
+            await jingle.composeComposition([100], [1], [2], [1, 2, 3, 4, 5], min, web3.sha3('hash'), { value: (min * 7) } ).should.be.fulfilled
+            await jingle.composeComposition([100], [1], [2], [1, 2, 3, 4, 5], min, web3.sha3('hash'), { value: (min * 7) } ).should.be.rejected
+            await jingle.composeComposition([100], [1], [3], [1, 2, 3, 4, 5], min, web3.sha3('hash'), { value: (min * 7) } ).should.be.fulfilled
+        })
     })
 })
