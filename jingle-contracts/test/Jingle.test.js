@@ -93,8 +93,9 @@ contract('Jingle', (accounts) => {
             await jingle.composeBaseMelody([100, 2, 4, -2, -2], [0, 1, 2, 3, 4], [1, 1, 1, 1, 1], min, { value: min })
         })
 
-        it('should let you create a composition', async () => {
+        it('should let you create a composition with valid layers', async () => {
             await jingle.composeComposition([100], [1], [2], [1, 2, 3, 4, 5], min, web3.sha3('hash'), { value: (min * 7) } ).should.be.fulfilled
+            await jingle.composeComposition([100], [1], [5], [1, 2, 3, 4, 9], min, web3.sha3('hash'), { value: (min * 7) } ).should.be.rejected
         })
 
         it('cannot copy a composition', async () => {
