@@ -25,6 +25,7 @@ var Templater = require( "./Templater.js" );
 app.use( "/js", Express.static( __dirname + "/../app/js" ) );
 app.use( "/css", Express.static( __dirname + "/../app/css" ) );
 app.use( "/node_modules", Express.static( __dirname + "/../app/node_modules" ) );
+app.use( "/templates", Express.static( __dirname + "/../app/templates" ) );
 
 
 //Express setup
@@ -46,14 +47,14 @@ app.get( "/", indexPage );
 app.get( "/explore", indexPage );
 app.get( "/create", indexPage );
 app.get( "/composers", indexPage );
+app.get( "/profile", indexPage );
+
 
 app.get( "/accounts/{address}", function( req, res ) {
 
 });
 
-app.get( "/jingle/{id}", function( req, res ) {
-
-});
+app.get( /\/jingle\/\d*/, indexPage );
 
 
 //Main listener

@@ -7,6 +7,8 @@ var App = function() {
 
     var scope = this;
 
+    scope.Contract = new Contract;
+
     scope.UI = new UI( scope );
 
     scope.Navigator = new Navigator( scope );

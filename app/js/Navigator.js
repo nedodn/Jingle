@@ -16,10 +16,10 @@ var Navigator = function( App ) {
      * Methods
      */
 
-    scope.route = function( method ) {
+    scope.route = function( methodFull ) {
 
-        method = method.split( "/" );
-        method = method[ method.length - 1 ];
+        var methodSplit = methodFull.split( "/" );
+        var method = methodSplit[ methodSplit.length - 1 ];
 
         if( method === "" ) {
 
@@ -27,9 +27,22 @@ var Navigator = function( App ) {
 
         }
 
-        console.log( method );
 
-        App.UI.showPage( method );
+        //Check if has arg like 0x or Jingle ID
+
+        if( /\d/.exec( method[ 0 ] ) !== null ) {
+
+            App.UI.showPage(
+                methodSplit[ methodSplit.length - 2 ],
+                methodSplit[ methodSplit.length - 1 ]
+            );
+
+        } else {
+
+            App.UI.showPage( method );
+
+        }
+
 
         switch( method ) {
 

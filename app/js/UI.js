@@ -3,9 +3,11 @@
  */
 "use strict";
 
-var UI = function() {
+var UI = function( App ) {
 
     var scope = this;
+
+    scope.Contract = App.Contract;
 
     scope.NotePicker = new EM.NotePicker();
     scope.Sequencer = new EM.Sequencer();
@@ -22,6 +24,13 @@ var UI = function() {
 UI.prototype = {
 
     /**
+     * Contract API
+     */
+
+    Contract: null,
+
+
+    /**
      * Music writing
      */
 
@@ -29,6 +38,8 @@ UI.prototype = {
     Sequencer: null,
 
     currentEditor: null,
+
+    templater: null,
 
 
     /**
@@ -47,9 +58,21 @@ UI.prototype = {
     composersId: "composers",
     composersDiv: null,
 
+    profileId: "profile",
+    profileDiv: null,
+
+    jingleId: "jingle",
+    jingleDiv: null,
+
     currentPage: null,
 
     pages: {},
+    pageMethods: {},
+
+    templates: [
+        "jingle.html",
+        "profile.html"
+    ],
 
 
     /**
@@ -64,10 +87,14 @@ UI.prototype = {
         scope.creatorDiv = document.getElementById( scope.creatorId );
         scope.exploreDiv = document.getElementById( scope.exploreId );
         scope.composersDiv = document.getElementById( scope.composersId );
+        scope.profileDiv = document.getElementById( scope.profileId );
+        scope.jingleDiv = document.getElementById( scope.jingleId );
 
         scope.creatorDiv.style.display = "none";
         scope.exploreDiv.style.display = "none";
         scope.composersDiv.style.display = "none";
+        scope.profileDiv.style.display = "none";
+        scope.jingleDiv.style.display = "none";
 
         scope.currentPage = scope.splashDiv;
 
@@ -76,7 +103,23 @@ UI.prototype = {
             "splash": scope.splashDiv,
             "explore": scope.exploreDiv,
             "composers": scope.composersDiv,
+            "profile": scope.profileDiv,
+            "jingle": scope.jingleDiv,
         };
+
+        scope.pageMethods = {
+            "jingle": scope.showJingle
+        };
+
+        scope.templater = new Templater({
+            templates: scope.templates
+        });
+
+        scope.templater.compile( function() {
+
+            scope.setupProfile();
+
+        });
 
     },
 
@@ -85,8 +128,6 @@ UI.prototype = {
      */
 
     setupHeader: function( accounts ) {
-
-        console.log( accounts );
 
         var addr = ( ! accounts || ! accounts.length )
             ? "Not Logged In"
@@ -106,10 +147,37 @@ UI.prototype = {
 
 
     /**
+     * Profile page setup
+     */
+
+    setupProfile: function() {
+
+        var scope = this;
+
+        var acct = web3.eth.accounts[ 0 ];
+
+        scope.Contract.getAccount( acct, function( account ) {
+
+            var vars = {
+                account: account
+            };
+
+            scope.templater.render( "profile.html", vars, function( template ) {
+
+                scope.profileDiv.innerHTML = template;
+
+            });
+
+        });
+
+    },
+
+
+    /**
      * Page shower
      */
 
-    showPage: function( page ) {
+    showPage: function( page, args ) {
 
         var scope = this;
 
@@ -119,11 +187,42 @@ UI.prototype = {
 
         }
 
-        var page = scope.pages[ page ];
+        var pageDiv = scope.pages[ page ];
 
-        page.style.display = "";
+        pageDiv.style.display = "";
 
-        scope.currentPage = page;
+        scope.currentPage = pageDiv;
+
+        if( scope.pageMethods[ page ] ) {
+
+            scope.pageMethods[ page ].bind( this )( args );
+
+        }
+
+    },
+
+
+    /**
+     * Jingle shower
+     */
+
+    showJingle: function( id ) {
+
+        var scope = this;
+
+        scope.Contract.getJingle( id, function( jingle ) {
+
+            var vars = {
+                jingle: jingle
+            };
+
+            scope.templater.render( "jingle.html", vars, function( template ) {
+
+                scope.jingleDiv.innerHTML = template;
+
+            });
+
+        });
 
     }
 

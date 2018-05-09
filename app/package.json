@@ -9,6 +9,7 @@
       "nunjucks": "*",
       "font-awesome": "*",
       "jquery": "*",
-      "bootstrap": "*"
+      "bootstrap": "*",
+      "async": "*"
   }
 }
