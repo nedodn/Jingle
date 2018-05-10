@@ -44,7 +44,7 @@ contract Jingle is Composable {
         //must pay registration fee
         require(msg.value >= minCompositionFee);
 
-        uint256 _id = createMelody(pitches, startTimes, durations, _compositionPrice);
+        createMelody(pitches, startTimes, durations, _compositionPrice);
 
         fees = fees.add(minCompositionFee);
     }
