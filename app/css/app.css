@@ -1,0 +1,176 @@
+/**
+ * Global
+ */
+a {
+    cursor: pointer;
+}
+
+.close-btn, .close-note-btn {
+    font-size: .8em;
+    padding: 2px 5px;
+}
+
+/**
+ * Header
+ */
+
+#header {
+    padding: 5px;
+    border-bottom: solid 2px #DF0000;
+}
+
+#network-section {
+    color: #28a745;
+}
+
+#header-links a {
+    padding: 10px;
+    background: #000;
+    color: #DF0000;
+    top: 1em;
+    position: relative;
+}
+
+#header-links a:hover {
+    text-decoration: none;
+    background: #DF0000;
+    color: #000;
+}
+
+#header-info {
+    text-align: right;
+}
+
+#header-info p {
+    margin: 0;
+}
+
+#header-info {
+    font-size: .8em;
+}
+
+
+/**
+ * App main
+ */
+#app > div {
+    padding: 10px;
+}
+
+/**
+ * Create note tab
+ */
+
+#create-note-form {
+    position: relative;
+}
+
+#create-form-disabled {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    padding: 0;
+}
+
+#create-form-disabled > p {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+}
+
+#note-picker-area {
+    margin-bottom: 10px;
+}
+
+.note-picker-beat {
+    padding: 10px;
+    border: 1px solid #999;
+    margin-bottom: 10px;
+}
+
+.note-picker-note {
+    border-left: 5px solid #4444FF;
+    padding: 10px;
+    background: #EEE;
+    margin-bottom: 10px;
+}
+
+#create-note-form .row {
+    margin-bottom: 10px;
+}
+
+#music-changed-alert, #music-note-created {
+    display: none;
+}
+
+
+/**
+ * Sequencer UI
+ */
+
+#sequencer-area {
+    padding: 10px 0;
+}
+
+.sequencer-beat {
+    width: 10em;
+    float: left;
+    margin-right: 10px;
+}
+
+.sequencer-notes {
+    overflow-y: scroll;
+    height: 20em;
+}
+
+.sequencer-black {
+    background: #000;
+    color: #FFF;
+}
+
+.sequencer-white {
+    background: #FFF;
+    color: #000;
+}
+
+.sequencer-note, .sequencer-note-active {
+    padding: 10px;
+    width: 120px;
+    cursor: pointer;
+    border-bottom: solid 1px #AAA;
+    border-left: solid 1px #AAA;
+    border-right: solid 1px #AAA;
+}
+
+.sequencer-note-active {
+    background: #FF0000 !important;
+    color: #FFF !important;
+}
+
+.sequencer-note:hover, .sequencer-note-active:hover {
+    background: #AAA !important;
+}
+
+
+/**
+ * Composer note / stats
+ */
+
+.composer-note {
+    border: 1px solid #AAA;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+.composer-data p {
+    margin: 0;
+}
+
+.composer-midi-data {
+    width: 100%;
+    overflow-x: auto;
+}
