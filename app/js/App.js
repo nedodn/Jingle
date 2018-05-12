@@ -3,6 +3,11 @@
  */
 "use strict";
 
+import { Contract } from "./Contract.js"
+import { UI } from "./UI.js"
+
+import { Navigator } from "./Navigator.js"
+
 var App = function() {
 
     var scope = this;

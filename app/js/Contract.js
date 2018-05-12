@@ -3,9 +3,15 @@
  */
 "use strict";
 
+import { default as TruffleContract } from "truffle-contract"
+
+import jingle_artifacts from '../../build/contracts/Jingle.json'
+
 var Contract = function() {
 
     var scope = this;
+
+    var JingleToken = TruffleContract( jingle_artifacts );
 
     scope.loadedJingles = {};
 
@@ -16,36 +22,55 @@ var Contract = function() {
 
     scope.getAccount = function( addr, callback ) {
 
-        var test = {
-            address: addr,
-            name: "Test",
-            jingles: [
-                {
-                    id: 1,
-                    name: "Test Jingle"
-                }
-            ]
-        };
+        JingleToken.tokensOf( addr, function( err, jingles ) {
 
-        callback( test );
+            var cleanJingles = [];
+
+            async.eachSeries( jingles, function( item, itemCallback ) {
+
+                scope.getJingle( item.toNumber(), function( jingle ) {
+
+                    cleanJingles.push( jingle );
+
+                    itemCallback();
+
+                });
+
+            }, function() {
+
+                var account = {
+                    address: addr,
+                    name: "Not Implemented",
+                    jingles: cleanJingles
+                };
+
+                callback( account );
+
+            });
+
+        });
 
     };
 
     scope.getJingles = function( callback ) {
 
-        var jingles = [ 1 ];
+        JingleToken.totalSupply( function( err, total ) {
 
-        async.eachSeries( jingles, function( item, itemCallback ) {
+            var jingles = Utils.createRange( 1, total );
 
-            scope.getJingle( item, function( jingle ) {
+            async.eachSeries( jingles, function( item, itemCallback ) {
 
-                itemCallback();
+                scope.getJingle( item, function( jingle ) {
+
+                    itemCallback();
+
+                });
+
+            }, function() {
+
+                callback( scope.loadedJingles );
 
             });
-
-        }, function() {
-
-            callback( scope.loadedJingles );
 
         });
 
@@ -59,16 +84,33 @@ var Contract = function() {
 
         }
 
-        scope.loadedJingles[ id ] = {
-            id: id,
-            name: "Test Jingle",
-            account: {
-                address: "0xTEST",
-                name: "Test",
-            }
-        };
+        JingleToken.getMelody( id, function( err, data ) {
 
-        callback( scope.loadedJingles[ id ] );
+            if( err ) {
+
+                throw err;
+
+            }
+
+            JingleToken.ownerOf( id, function( err, account ) {
+
+                var jingle = {
+                    id: id,
+                    pitches: data[ 0 ],
+                    startTimes: data[ 1 ],
+                    durations: data[ 2 ],
+                    account: {
+                        address: account
+                    }
+                };
+
+                scope.loadedJingles[ id ] = jingle
+
+                callback( scope.loadedJingles[ id ] );
+
+            });
+
+        });
 
     };
 
@@ -78,6 +120,32 @@ var Contract = function() {
      */
 
     scope.create = function( data, callback ) {
+
+        var trans = {
+            value: COMPOSITION_PRICE
+        };
+
+        JingleToken.composeBaseMelody(
+            data.pitches,
+            data.startTimes,
+            data.durations,
+            data.price,
+            trans,
+            function( err, result ) {
+
+                if( err ) {
+
+                    throw err;
+
+                }
+
+                callback( result );
+
+            }
+        );
+
     };
 
 };
+
+export { Contract };

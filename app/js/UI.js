@@ -227,3 +227,5 @@ UI.prototype = {
     }
 
 };
+
+export { UI };

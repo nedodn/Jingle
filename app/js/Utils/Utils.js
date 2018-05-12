@@ -49,7 +49,12 @@ var Utils = {
 
         return div.children[ 0 ];
 
+    },
+
+    createRange: function( start, end ) {
+
+        return Array(end - start + 1).fill().map((_, idx) => start + idx)
+
     }
 
 };
-

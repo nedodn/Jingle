@@ -74,3 +74,5 @@ var Navigator = function( App ) {
     scope.route( window.location.href );
 
 };
+
+export { Navigator };
