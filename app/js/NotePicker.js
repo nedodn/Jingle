@@ -3,8 +3,10 @@
  */
 "use strict";
 
+import { EventDispatcher } from "./Utils/EventDispatcher.js";
+import { EditorHelper } from "./EditorHelper.js";
 
-EM.NotePicker = function() {
+var NotePicker = function() {
 
     var scope = this;
 
@@ -14,9 +16,9 @@ EM.NotePicker = function() {
 
 };
 
-EM.NotePicker.prototype = {
+NotePicker.prototype = {
 
-    construct: EM.NotePicker,
+    construct: NotePicker,
 
     areaId: "note-picker-area",
     area: null,
@@ -99,7 +101,7 @@ EM.NotePicker.prototype = {
 
             scope.setCloseButtonEvents(
                 noteDiv,
-                EM.EditorHelper.closeNoteBtnClass
+                EditorHelper.closeNoteBtnClass
             );
 
             noteArea.appendChild( noteDiv );
@@ -108,7 +110,7 @@ EM.NotePicker.prototype = {
 
         scope.setChangeEvents( div );
 
-        scope.setCloseButtonEvents( div, EM.EditorHelper.closeBtnClass );
+        scope.setCloseButtonEvents( div, EditorHelper.closeBtnClass );
         scope.setBeatNoteEvents( div );
 
     },
@@ -135,7 +137,7 @@ EM.NotePicker.prototype = {
 
             input.onchange = function() {
 
-                EM.EditorHelper.checkRandom( input );
+                EditorHelper.checkRandom( input );
 
                 scope.dispatch({ type: "change" });
 
@@ -184,11 +186,11 @@ EM.NotePicker.prototype = {
 
         var scope = this;
 
-        var btns = div.getElementsByClassName( EM.EditorHelper.closeNoteBtnClass );
+        var btns = div.getElementsByClassName( EditorHelper.closeNoteBtnClass );
 
         scope.setCloseButtonEvents(
             btns[ 0 ].parentNode.parentNode.parentNode.parentNode,
-            EM.EditorHelper.closeNoteBtnClass
+            EditorHelper.closeNoteBtnClass
         );
 
     },
@@ -290,7 +292,7 @@ EM.NotePicker.prototype = {
 
         var scope = this;
 
-        EM.EditorHelper.removeNode( div );
+        EditorHelper.removeNode( div );
 
         scope.dispatch({ type: "change" });
 
@@ -305,7 +307,7 @@ EM.NotePicker.prototype = {
 
         var scope = this;
 
-        return EM.EditorHelper.getArgs( scope.getABC() );
+        return EditorHelper.getArgs( scope.getABC() );
 
     },
 
@@ -318,10 +320,12 @@ EM.NotePicker.prototype = {
 
         var scope = this;
 
-        EM.EditorHelper.setRequired( scope.area, required );
+        EditorHelper.setRequired( scope.area, required );
 
     }
 
 };
 
-EventDispatcher.prototype.apply( EM.NotePicker.prototype );
+EventDispatcher.prototype.apply( NotePicker.prototype );
+
+export { NotePicker };

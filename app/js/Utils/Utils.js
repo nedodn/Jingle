@@ -58,3 +58,5 @@ var Utils = {
     }
 
 };
+
+export { Utils };

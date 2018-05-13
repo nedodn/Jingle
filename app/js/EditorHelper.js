@@ -3,7 +3,7 @@
  */
 "use strict";
 
-EM.EditorHelper = new function() {
+var EditorHelper = new function() {
 
     var scope = this;
 
@@ -104,4 +104,6 @@ EM.EditorHelper = new function() {
     };
 
 };
+
+export { EditorHelper };
 

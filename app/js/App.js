@@ -39,3 +39,5 @@ var App = function() {
     });
 
 };
+
+export { App };

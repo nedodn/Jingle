@@ -8,6 +8,11 @@
  */
 "use strict";
 
+import { EventDispatcher } from "./EventDispatcher.js";
+import { Utils } from "./Utils.js";
+import { AJAX } from "./AJAX.js";
+var nunjucks = require("nunjucks");
+
 var Templater = function( options ) {
 
     var scope = this;
@@ -177,3 +182,5 @@ Templater.Defaults = {
     templates: false,
     directory: "/templates/"
 };
+
+export { Templater };

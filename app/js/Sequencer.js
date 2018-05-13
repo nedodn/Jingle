@@ -3,7 +3,10 @@
  */
 "use strict";
 
-EM.Sequencer = function() {
+import { EventDispatcher } from "./Utils/EventDispatcher.js";
+import { EditorHelper } from "./EditorHelper.js";
+
+var Sequencer = function() {
 
     var scope = this;
 
@@ -13,9 +16,9 @@ EM.Sequencer = function() {
 
 };
 
-EM.Sequencer.prototype = {
+Sequencer.prototype = {
 
-    construct: EM.Sequencer,
+    construct: Sequencer,
 
 
     /**
@@ -107,7 +110,7 @@ EM.Sequencer.prototype = {
 
         var scope = this;
 
-        EM.EditorHelper.removeNode( div );
+        EditorHelper.removeNode( div );
 
         scope.dispatch({ type: "change" });
 
@@ -163,7 +166,7 @@ EM.Sequencer.prototype = {
 
         selector.onchange = function() {
 
-            EM.EditorHelper.checkRandom( selector );
+            EditorHelper.checkRandom( selector );
 
             scope.dispatch({ type: "change" });
 
@@ -182,7 +185,7 @@ EM.Sequencer.prototype = {
 
         var scope = this;
 
-        var btns = div.getElementsByClassName( EM.EditorHelper.closeBtnClass );
+        var btns = div.getElementsByClassName( EditorHelper.closeBtnClass );
         var bl = btns.length;
 
         for( var i = 0; i < bl; ++ i ) {
@@ -269,7 +272,7 @@ EM.Sequencer.prototype = {
 
         var scope = this;
 
-        return EM.EditorHelper.getArgs( scope.getABC() );
+        return EditorHelper.getArgs( scope.getABC() );
 
     },
 
@@ -282,7 +285,7 @@ EM.Sequencer.prototype = {
 
         var scope = this;
 
-        EM.EditorHelper.setRequired( scope.area, required );
+        EditorHelper.setRequired( scope.area, required );
 
     }
 
@@ -291,4 +294,6 @@ EM.Sequencer.prototype = {
 
 //Dispatcher extend
 
-EventDispatcher.prototype.apply( EM.Sequencer.prototype );
+EventDispatcher.prototype.apply( Sequencer.prototype );
+
+export { Sequencer };

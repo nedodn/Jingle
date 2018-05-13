@@ -16,3 +16,5 @@ var Networks = {
     "42": "kovan"
 
 };
+
+export { Networks };

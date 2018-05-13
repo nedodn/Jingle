@@ -3,14 +3,19 @@
  */
 "use strict";
 
+import { NotePicker } from './NotePicker.js';
+import { Sequencer } from './Sequencer.js';
+import { Templater } from './Utils/Templater.js';
+import { Networks } from './Networks.js';
+
 var UI = function( App ) {
 
     var scope = this;
 
     scope.Contract = App.Contract;
 
-    scope.NotePicker = new EM.NotePicker();
-    scope.Sequencer = new EM.Sequencer();
+    scope.NotePicker = new NotePicker();
+    scope.Sequencer = new Sequencer();
 
     scope.NotePicker.setRequired( false );
     scope.Sequencer.setRequired( true );

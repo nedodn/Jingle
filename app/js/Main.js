@@ -3,10 +3,13 @@
  */
 "use strict";
 
-window.onload = init;
+import { App } from "./App.js";
+
+window.addEventListener('load', function () {
+    console.log('something here plz');
+    init();
+})
 
 function init() {
-
-    var app = new App;
-
+    var app = new App();
 }

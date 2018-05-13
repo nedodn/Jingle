@@ -131,3 +131,5 @@ EventDispatcher.prototype = {
 	}
 
 };
+
+export { EventDispatcher };

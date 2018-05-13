@@ -83,3 +83,4 @@ var AJAX = new function() {
 
 };
 
+export { AJAX };
