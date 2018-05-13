@@ -6,7 +6,6 @@
 import { App } from "./App.js";
 
 window.addEventListener('load', function () {
-    console.log('something here plz');
     init();
 })
 

@@ -3,15 +3,18 @@
  */
 "use strict";
 
-import { default as TruffleContract } from "truffle-contract"
+import { default as async } from "async";
+import { default as contract } from "truffle-contract";
 
-import jingle_artifacts from '../../build/contracts/Jingle.json'
+import jingle_artifacts from '../../build/contracts/Jingle.json';
 
 var Contract = function() {
 
     var scope = this;
 
-    var JingleToken = TruffleContract( jingle_artifacts );
+    var JingleContract = contract( jingle_artifacts );
+
+    JingleContract.setProvider(web3.currentProvider);
 
     scope.loadedJingles = {};
 
@@ -22,55 +25,61 @@ var Contract = function() {
 
     scope.getAccount = function( addr, callback ) {
 
-        JingleToken.tokensOf( addr, function( err, jingles ) {
+        JingleContract.deployed().then((jingleInstance) => {
 
-            var cleanJingles = [];
+            jingleInstance.tokensOf.call( addr ).then((jingles) => {
+                var cleanJingles = [];
 
-            async.eachSeries( jingles, function( item, itemCallback ) {
+                async.eachSeries( jingles, function( item, itemCallback ) {
 
-                scope.getJingle( item.toNumber(), function( jingle ) {
+                    scope.getJingle( item.toNumber(), function( jingle ) {
 
-                    cleanJingles.push( jingle );
+                        cleanJingles.push( jingle );
 
-                    itemCallback();
+                        itemCallback();
+
+                    });
+
+                }, function() {
+
+                    var account = {
+                        address: addr,
+                        name: "Not Implemented",
+                        jingles: cleanJingles
+                    };
+
+                    callback( account );
 
                 });
 
-            }, function() {
-
-                var account = {
-                    address: addr,
-                    name: "Not Implemented",
-                    jingles: cleanJingles
-                };
-
-                callback( account );
-
             });
-
         });
-
     };
 
     scope.getJingles = function( callback ) {
 
-        JingleToken.totalSupply( function( err, total ) {
 
-            var jingles = Utils.createRange( 1, total );
+        JingleContract.deployed().then((jingleInstance) => {
 
-            async.eachSeries( jingles, function( item, itemCallback ) {
+            jingleInstance.totalSupply.call().then((total) => {
+                
+                var jingles = Utils.createRange( 1, total );
 
-                scope.getJingle( item, function( jingle ) {
+                async.eachSeries( jingles, function( item, itemCallback ) {
 
-                    itemCallback();
+                    scope.getJingle( item, function( jingle ) {
+
+                        itemCallback();
+
+                    });
+
+                }, function() {
+
+                    callback( scope.loadedJingles );
 
                 });
-
-            }, function() {
-
-                callback( scope.loadedJingles );
-
-            });
+                
+            }) 
 
         });
 
@@ -84,32 +93,36 @@ var Contract = function() {
 
         }
 
-        JingleToken.getMelody( id, function( err, data ) {
+        JingleContract.deployed().then((jingleInstance) => {
 
-            if( err ) {
 
-                throw err;
+            jingleInstance.getMelody.call( id ).then((data) => {
 
-            }
+                if( err ) {
 
-            JingleToken.ownerOf( id, function( err, account ) {
+                    throw err;
 
-                var jingle = {
-                    id: id,
-                    pitches: data[ 0 ],
-                    startTimes: data[ 1 ],
-                    durations: data[ 2 ],
-                    account: {
-                        address: account
-                    }
-                };
+                }
 
-                scope.loadedJingles[ id ] = jingle
+                jingleInstance.ownerOf.call( id ).then((account) => { 
 
-                callback( scope.loadedJingles[ id ] );
+                    var jingle = {
+                        id: id,
+                        pitches: data[ 0 ],
+                        startTimes: data[ 1 ],
+                        durations: data[ 2 ],
+                        account: {
+                            address: account
+                        }
+                    };
+
+                    scope.loadedJingles[ id ] = jingle
+
+                    callback( scope.loadedJingles[ id ] );
+
+                });
 
             });
-
         });
 
     };
@@ -125,24 +138,20 @@ var Contract = function() {
             value: COMPOSITION_PRICE
         };
 
-        JingleToken.composeBaseMelody(
-            data.pitches,
-            data.startTimes,
-            data.durations,
-            data.price,
-            trans,
-            function( err, result ) {
+        JingleContract.deployed().then((jingleInstance) => {
 
-                if( err ) {
-
-                    throw err;
-
-                }
+            jingleInstance.composeBaseMelody(
+                data.pitches,
+                data.startTimes,
+                data.durations,
+                data.price,
+                trans,
+            ).then((result) => {
 
                 callback( result );
 
-            }
-        );
+            });
+        });
 
     };
 

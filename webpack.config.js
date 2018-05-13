@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: './app/js/Main.js',
@@ -8,6 +9,7 @@ module.exports = {
     filename: 'App.js'
   },
   plugins: [
+    //new UglifyJsPlugin()
   ],
   module: {
     rules: [

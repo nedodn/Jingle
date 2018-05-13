@@ -1,5 +1,4 @@
 #!/bin/bash
 
 webpack
-cd src
-node App.js
+node ./src/App.js

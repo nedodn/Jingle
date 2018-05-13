@@ -41,6 +41,7 @@
     "tone": "^0.11.11",
     "truffle": "^4.1.8",
     "truffle-hdwallet-provider": "0.0.3",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "zeppelin-solidity": "1.6.0"
   }
 }
