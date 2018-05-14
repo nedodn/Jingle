@@ -328,27 +328,6 @@ Midi.NoteLength = {
 
 
 /**
- * Conversion to VexTab
- */
-
-Midi.VexTab = {
-
-    NoteLength: {
-        0: "1",
-        1: "1",
-        2: "2",
-        3: "2",
-        4: "4",
-        5: "4",
-        6: "8",
-        7: "8",
-        8: "16",
-    }
-
-};
-
-
-/**
  * ABC notation conversion
  */
 

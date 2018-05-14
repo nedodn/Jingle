@@ -11,6 +11,7 @@
 import { EventDispatcher } from "./EventDispatcher.js";
 import { Utils } from "./Utils.js";
 import { AJAX } from "./AJAX.js";
+
 var nunjucks = require("nunjucks");
 
 var Templater = function( options ) {

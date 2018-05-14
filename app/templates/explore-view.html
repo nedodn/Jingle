@@ -1,0 +1,13 @@
+<!-- Jingle view -->
+
+{% for jingle in jingles %}
+
+<div class="piece-explore-view">
+
+    <h2><a href="/jingle/{{ jingle.id }}">PIECE NAME NOT IMPLEMENTED</a></h2>
+
+    <p>Composer: <b>{{ jingle.account.address }}</b></p>
+
+</div>
+
+{% endfor %}

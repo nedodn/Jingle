@@ -10,6 +10,12 @@ abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
 
+abcjs@*:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/abcjs/-/abcjs-5.0.1.tgz#f48b01bbab4d5e5664f30656727cb799846c3604"
+  dependencies:
+    midi "https://github.com/paulrosen/MIDI.js.git#abcjs"
+
 ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
@@ -408,6 +414,10 @@ micromatch@^2.1.5:
     object.omit "^2.0.0"
     parse-glob "^3.0.4"
     regex-cache "^0.4.2"
+
+"midi@git+https://github.com/paulrosen/MIDI.js.git#abcjs":
+  version "0.4.2"
+  resolved "git+https://github.com/paulrosen/MIDI.js.git#e593ffef81a0350f99448e3ab8111957145ff6b2"
 
 minimatch@^3.0.2, minimatch@^3.0.4:
   version "3.0.4"

@@ -7,6 +7,7 @@ import { NotePicker } from './NotePicker.js';
 import { Sequencer } from './Sequencer.js';
 import { Templater } from './Utils/Templater.js';
 import { Networks } from './Networks.js';
+import { ABCHelper } from './ABCHelper.js';
 
 var UI = function( App ) {
 
@@ -14,10 +15,8 @@ var UI = function( App ) {
 
     scope.Contract = App.Contract;
 
-    scope.NotePicker = new NotePicker();
     scope.Sequencer = new Sequencer();
 
-    scope.NotePicker.setRequired( false );
     scope.Sequencer.setRequired( true );
 
     scope.currentEditor = scope.Sequencer;
@@ -39,7 +38,6 @@ UI.prototype = {
      * Music writing
      */
 
-    NotePicker: null,
     Sequencer: null,
 
     currentEditor: null,
@@ -69,6 +67,9 @@ UI.prototype = {
     jingleId: "jingle",
     jingleDiv: null,
 
+    createForm: null,
+    createFormId: "create-form",
+
     currentPage: null,
 
     pages: {},
@@ -76,7 +77,8 @@ UI.prototype = {
 
     templates: [
         "jingle.html",
-        "profile.html"
+        "profile.html",
+        "explore-view.html"
     ],
 
 
@@ -94,6 +96,8 @@ UI.prototype = {
         scope.composersDiv = document.getElementById( scope.composersId );
         scope.profileDiv = document.getElementById( scope.profileId );
         scope.jingleDiv = document.getElementById( scope.jingleId );
+
+        scope.createForm = document.getElementById( scope.createFormId );
 
         scope.creatorDiv.style.display = "none";
         scope.exploreDiv.style.display = "none";
@@ -123,6 +127,8 @@ UI.prototype = {
         scope.templater.compile( function() {
 
             scope.setupProfile();
+            scope.setupCreator();
+            scope.setupExplore();
 
         });
 
@@ -170,6 +176,125 @@ UI.prototype = {
             scope.templater.render( "profile.html", vars, function( template ) {
 
                 scope.profileDiv.innerHTML = template;
+
+            });
+
+        });
+
+    },
+
+
+    /**
+     * Setup jingle creator
+     */
+
+    setupCreator: function() {
+
+        var scope = this;
+
+        var priceInput = document.getElementById( "creator-price" );
+
+        //Main submit
+
+        scope.createForm.onsubmit = function( e ) {
+
+            e.preventDefault();
+
+            var args = scope.currentEditor.getArgs();
+
+            if( ! args.pitches.length ) {
+
+                return alert( "No beats created. Please add some music before submitting" );
+
+            }
+
+            args.price = web3.toWei( priceInput.value, "ether" );
+
+
+            //Launch contract call
+
+            scope.Contract.create( args, function() {
+
+                alert( "CREATED JINGLE" );
+
+            });
+
+        };
+
+        updateCreatorView();
+
+        function updateCreatorView() {
+
+            scope.updateCreatorView();
+
+        }
+
+        //Events
+
+        scope.Sequencer.on( "change", updateCreatorView );
+
+    },
+
+
+    /**
+     * ABC View for creator
+     */
+
+    updateCreatorView: function() {
+
+        var scope = this;
+
+        var creatorView = document.getElementById( "note-creator-view" );
+        var listenView = document.getElementById( "note-creator-listen" );
+
+        var beats = scope.currentEditor.getABC();
+
+        if( ! beats || ! beats.length ) {
+
+            creatorView.innerHTML = "";
+            return;
+
+        }
+
+        var abc = ABCHelper.convertArrayToABC( beats );
+        abc = "X: 1\n" +
+            "K: C\n" +
+            "L: 1/32\n" +
+            ":" + abc;
+
+        var midiOpts = {
+            inlineControls: {
+                startPlaying: true
+            }
+        };
+
+        ABCJS.renderAbc( creatorView, abc );
+        var midiRender = ABCJS.renderMidi( listenView, abc, midiOpts, midiOpts );
+
+    },
+
+
+    /**
+     * Explorer
+     */
+
+    setupExplore: function() {
+
+        var scope = this;
+
+        scope.Contract.getJingles( function( jingles ) {
+
+            console.log( jingles );
+
+            var div = document.getElementById( "piece-explore" );
+
+            var vars = {
+                jingles: Object.values( jingles )
+            };
+
+            scope.templater.render( "explore-view.html", vars, function( template ) {
+
+                div.innerHTML = template;
 
             });
 

@@ -6,11 +6,15 @@
 import { default as async } from "async";
 import { default as contract } from "truffle-contract";
 
+import { Utils } from "./Utils/Utils.js"
+
 import jingle_artifacts from '../../build/contracts/Jingle.json';
 
 var Contract = function() {
 
     var scope = this;
+
+    var COMPOSITION_FEE = web3.toWei( 0.01, "ether" );
 
     var JingleContract = contract( jingle_artifacts );
 
@@ -28,6 +32,7 @@ var Contract = function() {
         JingleContract.deployed().then((jingleInstance) => {
 
             jingleInstance.tokensOf.call( addr ).then((jingles) => {
+
                 var cleanJingles = [];
 
                 async.eachSeries( jingles, function( item, itemCallback ) {
@@ -58,11 +63,10 @@ var Contract = function() {
 
     scope.getJingles = function( callback ) {
 
-
         JingleContract.deployed().then((jingleInstance) => {
 
             jingleInstance.totalSupply.call().then((total) => {
-                
+
                 var jingles = Utils.createRange( 1, total );
 
                 async.eachSeries( jingles, function( item, itemCallback ) {
@@ -78,8 +82,8 @@ var Contract = function() {
                     callback( scope.loadedJingles );
 
                 });
-                
-            }) 
+
+            })
 
         });
 
@@ -95,16 +99,9 @@ var Contract = function() {
 
         JingleContract.deployed().then((jingleInstance) => {
 
-
             jingleInstance.getMelody.call( id ).then((data) => {
 
-                if( err ) {
-
-                    throw err;
-
-                }
-
-                jingleInstance.ownerOf.call( id ).then((account) => { 
+                jingleInstance.ownerOf.call( id ).then((account) => {
 
                     var jingle = {
                         id: id,
@@ -135,17 +132,20 @@ var Contract = function() {
     scope.create = function( data, callback ) {
 
         var trans = {
-            value: COMPOSITION_PRICE
+            value: COMPOSITION_FEE,
+            from: web3.eth.accounts[ 0 ]
         };
 
         JingleContract.deployed().then((jingleInstance) => {
+
+            console.log( data );
 
             jingleInstance.composeBaseMelody(
                 data.pitches,
                 data.startTimes,
                 data.durations,
                 data.price,
-                trans,
+                trans
             ).then((result) => {
 
                 callback( result );

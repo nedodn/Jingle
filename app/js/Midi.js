@@ -279,6 +279,42 @@ Midi.NoteNumber = {
 
 
 /**
+ * ABC notation conversion
+ */
+
+Midi.ABC = {
+
+    NoteLength: {
+        0: "32",
+        1: "24",
+        2: "16",
+        3: "10",
+        4: "8",
+        5: "6",
+        6: "4",
+        7: "3",
+        8: "2",
+    }
+
+};
+
+
+/**
+ * Length precision for contract
+ */
+
+Midi.LengthToPrecision = {
+    0: 16,
+    1: 12,
+    2: 8,
+    3: 6,
+    4: 4,
+    5: 2,
+    6: 1,
+};
+
+
+/**
  * Sequencer order === reverse
  */
 

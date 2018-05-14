@@ -3,9 +3,15 @@
  */
 "use strict";
 
+import { Midi } from "./Midi.js"
+
 var EditorHelper = new function() {
 
     var scope = this;
+
+    scope.startingPitch = 100;
+    scope.percision = 4; //Quarter note length
+
 
     /**
      * Props
@@ -39,31 +45,63 @@ var EditorHelper = new function() {
     scope.getArgs = function( beats ) {
 
         var midi = [];
-        var dividers = [];
-        var lengths = [];
+        var startTimes = [];
+        var durations = [];
 
         var bl = beats.length;
 
         var lastDivide = 0;
 
+        var transposition = 0;
+
+        var lastNotePitch = 0;
+        var lastNote = 0;
+
+        console.log( beats );
+
         for( var i = 0; i < bl; ++ i ) {
 
             var beat = beats[ i ];
 
-            midi = midi.concat( beat.notes );
+            var nl = beat.notes.length;
 
-            dividers.push( lastDivide + beat.notes.length );
-            lengths.push( beat.length );
+            var length = Midi.LengthToPrecision[ beat.length ];
 
-            lastDivide += beat.notes.length;
+            //Rest
+            if( nl === 0 ) {
+
+                lastDivide += length;
+                continue;
+
+            }
+
+            for( var t = 0; t < nl; ++ t ) {
+
+                var note = beat.notes[ t ];
+
+                if( transposition === 0 ) {
+
+                    transposition = scope.startingPitch - note;
+
+                }
+
+                var noteInterval = transposition + note;
+
+                midi.push( noteInterval );
+                durations.push( length );
+                startTimes.push( lastDivide );
+
+            }
+
+            lastDivide += length;
 
         }
 
-        return [
-            midi,
-            dividers,
-            lengths
-        ];
+        return {
+            pitches: midi,
+            startTimes: startTimes,
+            durations: durations
+        };
 
     }
 
@@ -106,4 +144,3 @@ var EditorHelper = new function() {
 };
 
 export { EditorHelper };
-

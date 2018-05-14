@@ -1,68 +1,53 @@
 <h2>Create</h2>
 
-<div class="row">
+<form id="create-form">
 
-    <div class="col-md-3">
-        <p>Title</p>
+    <div class="row">
+
+        <div class="col-md-3">
+            <p>Title</p>
+        </div>
+
+        <div class="col-md-9">
+            <input id="creator-title" placeholder="Title of the jingle" class="form-control" required>
+        </div>
+
     </div>
 
-    <div class="col-md-9">
-        <input id="creator-title" placeholder="Title of the jingle" class="form-control" required>
+    <div class="row">
+
+        <div class="col-md-3">
+            <p>Price</p>
+        </div>
+
+        <div class="col-md-9">
+            <input id="creator-price" name="price" class="form-control" placeholder="0.01 (in ETH)" required>
+        </div>
+
     </div>
 
-</div>
+    <h3>Music Writer</h3>
 
-<div class="row">
-
-    <div class="col-md-3">
-        <p>Description</p>
-    </div>
-
-    <div class="col-md-9">
-        <textarea id="creator-description" placeholder="Jingle description" class="form-control"></textarea>
-    </div>
-
-</div>
-
-<h3>Music</h3>
-
-<ul class="nav nav-tabs" id="creator-tabs" role="tablist">
-
-    <li class="nav-item">
-        <a class="nav-link active" id="sequencer-tab" data-toggle="tab" href="#sequencer-content" role="tab">Sequencer</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" id="note-picker-tab" data-toggle="tab" href="#note-picker-content" role="tab">Note Picker</a>
-    </li>
-
-</ul>
-
-<div class="tab-content">
-
-    <div class="tab-pane fade" id="note-picker-content">
-        {% include "note-picker.html" %}
-    </div>
-
-    <div class="tab-pane fade show active" id="sequencer-content">
+    <div id="sequencer-content">
         {% include "sequencer.html" %}
     </div>
 
-</div>
+    <div class="row">
 
-<div class="row">
+        <div class="col-md-12">
 
-    <div class="col-md-12">
+            <h2>Hearing is Believing</h2>
 
-        <h2>Hearing is Believing</h2>
+            <div id="note-creator-listen"></div>
 
-        <div id="note-creator-listen"></div>
+            <div id="note-creator-view"></div>
 
-        <div id="note-creator-view"></div>
+            <div id="music-note-created" class="alert alert-success"></div>
 
-        <div id="music-note-created" class="alert alert-success"></div>
+            <button type="submit" class="btn btn-success btn-block">Create Jingle</button>
 
-        <button type="submit" class="btn btn-success btn-block">Create Your Donation</button>
+        </div>
+
     </div>
 
-</div>
+</form>

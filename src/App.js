@@ -25,6 +25,7 @@ var Templater = require( "./Templater.js" );
 app.use( "/js", Express.static( __dirname + "/../app/js" ) );
 app.use( "/build", Express.static( __dirname + "/../app/build" ) );
 app.use( "/css", Express.static( __dirname + "/../app/css" ) );
+app.use( "/fonts", Express.static( __dirname + "/../app/fonts" ) );
 app.use( "/node_modules", Express.static( __dirname + "/../app/node_modules" ) );
 app.use( "/templates", Express.static( __dirname + "/../app/templates" ) );
 

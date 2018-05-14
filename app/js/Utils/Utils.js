@@ -55,7 +55,18 @@ var Utils = {
 
         return Array(end - start + 1).fill().map((_, idx) => start + idx)
 
-    }
+    },
+
+
+    /**
+     * Repeat shim
+     */
+
+    repeat: function( str, num ) {
+
+        return new Array( num + 1 ).join( str );
+
+    },
 
 };
 
