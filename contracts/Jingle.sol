@@ -129,14 +129,21 @@ contract Jingle is Composable {
     /**
     * @dev gets a melody for a composition
      */
-    function getMelody(uint256 _id) external view returns (int8[] _pitches, uint256[] _startTimes, uint256[] _durations) {
-        note[] memory melody = tokenIdToMelody[_id].melody;
+    function getMelody(uint256 _id) public view returns (int8[], uint256[], uint256[]) {
+        Melody storage melody = tokenIdToMelody[_id];
 
-        for (uint256 i = 0; i < melody.length; ++i) {
-            _pitches[i] = melody[i].pitch;
-            _startTimes[i] = melody[i].startTime;
-            _durations[i] = melody[i].duration;
+        int8[] memory _pitches = new int8[](melody.melody.length);
+        uint[] memory _startTimes = new uint256[](melody.melody.length);
+        uint256[] memory _durations = new uint256[](melody.melody.length);
+
+        for (uint256 i = 0; i < melody.melody.length; ++i) {
+            note memory _note = melody.melody[i];
+            _pitches[i] = _note.pitch;
+            _startTimes[i] = _note.startTime;
+            _durations[i] = _note.duration;
         }
+
+        return (_pitches, _startTimes, _durations);
     }
 
 // ----- PRIVATE FUNCTIONS ------------------------------------------------------------------------

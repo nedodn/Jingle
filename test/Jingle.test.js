@@ -17,6 +17,9 @@ contract('Jingle', (accounts) => {
     describe('Base Melodies', () => {
         it('should let you create a Base Melody', async () => {
             await jingle.composeBaseMelody([100, 2, 4, -2, -4], [0, 1, 2, 3, 4], [1, 1, 1, 1, 1], min, { value: min }).should.be.fulfilled
+            try{
+                let result = await jingle.getMelody.call(0)
+            }catch(e) {console.log(e)}
         })
         it('but not without 100 as the first pitch', async () => {
             await jingle.composeBaseMelody([10, 2, 4, -2, -4], [0, 1, 2, 3, 4], [1, 1, 1, 1, 1], min, { value: min }).should.be.rejected
