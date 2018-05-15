@@ -1,0 +1,22 @@
+<h2> {{ account.name }}</h2>
+<h3>{{ account.address }}</h3>
+
+<h4>Jingles</h4>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+    </tr>
+
+    {% for jingle in account.jingles %}
+    <tr>
+        <td><a href="/jingle/{{ jingle.id }}">{{ jingle.id }}</a></td>
+        <td><a href="/jingle/{{ jingle.id }}">{{ jingle.name }}</a></td>
+        <td><b>{{ jingle.price }}</b> ETH</td>
+    </tr>
+    {% endfor %}
+
+</table>

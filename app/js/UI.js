@@ -8,6 +8,7 @@ import { Sequencer } from './Sequencer.js';
 import { Templater } from './Utils/Templater.js';
 import { Networks } from './Networks.js';
 import { ABCHelper } from './ABCHelper.js';
+import { JingleViewer } from './JingleViewer.js';
 
 var UI = function( App ) {
 
@@ -44,6 +45,8 @@ UI.prototype = {
 
     templater: null,
 
+    JingleViewer: null,
+
 
     /**
      * Page naviagtion
@@ -67,6 +70,9 @@ UI.prototype = {
     jingleId: "jingle",
     jingleDiv: null,
 
+    accountId: "account",
+    accountDiv: null,
+
     createForm: null,
     createFormId: "create-form",
 
@@ -78,7 +84,8 @@ UI.prototype = {
     templates: [
         "jingle.html",
         "profile.html",
-        "explore-view.html"
+        "explore-view.html",
+        "account.html"
     ],
 
 
@@ -96,6 +103,7 @@ UI.prototype = {
         scope.composersDiv = document.getElementById( scope.composersId );
         scope.profileDiv = document.getElementById( scope.profileId );
         scope.jingleDiv = document.getElementById( scope.jingleId );
+        scope.accountDiv = document.getElementById( scope.accountId );
 
         scope.createForm = document.getElementById( scope.createFormId );
 
@@ -104,6 +112,7 @@ UI.prototype = {
         scope.composersDiv.style.display = "none";
         scope.profileDiv.style.display = "none";
         scope.jingleDiv.style.display = "none";
+        scope.accountDiv.style.display = "none";
 
         scope.currentPage = scope.splashDiv;
 
@@ -114,15 +123,22 @@ UI.prototype = {
             "composers": scope.composersDiv,
             "profile": scope.profileDiv,
             "jingle": scope.jingleDiv,
+            "accounts": scope.accountDiv,
         };
 
         scope.pageMethods = {
-            "jingle": scope.showJingle
+            "jingle": scope.showJingle,
+            "accounts": scope.showAccount
         };
 
         scope.templater = new Templater({
             templates: scope.templates
         });
+
+        scope.JingleViewer = new JingleViewer(
+            scope.jingleDiv,
+            scope.templater
+        );
 
         scope.templater.compile( function() {
 
@@ -346,9 +362,32 @@ UI.prototype = {
                 jingle: jingle
             };
 
-            scope.templater.render( "jingle.html", vars, function( template ) {
+            console.log( jingle );
 
-                scope.jingleDiv.innerHTML = template;
+            scope.JingleViewer.display( jingle );
+
+        });
+
+    },
+
+
+    /**
+     * Account shower
+     */
+
+    showAccount: function( addr ) {
+
+        var scope = this;
+
+        scope.Contract.getAccount( addr, function( account ) {
+
+            var vars = {
+                account: account
+            };
+
+            scope.templater.render( "account.html", vars, function( template ) {
+
+                scope.accountDiv.innerHTML = template;
 
             });
 

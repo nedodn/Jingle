@@ -111,14 +111,22 @@ var Contract = function() {
                         pitches: data[ 0 ],
                         startTimes: data[ 1 ],
                         durations: data[ 2 ],
+                        price: data[ 3 ],
                         account: {
                             address: account
                         }
                     };
 
-                    scope.loadedJingles[ id ] = jingle
+                    jingleInstance.getCompositionPrice.call( id ).then( (price) => {
 
-                    callback( scope.loadedJingles[ id ] );
+                        jingle.price = web3.fromWei( price, "ether" );
+
+                        scope.loadedJingles[ id ] = jingle
+
+                        callback( scope.loadedJingles[ id ] );
+
+                    });
+
 
                 });
 

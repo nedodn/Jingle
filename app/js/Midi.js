@@ -313,6 +313,19 @@ Midi.LengthToPrecision = {
     6: 1,
 };
 
+Midi.PrecisionToLength = (function() {
+
+    var out = {};
+
+    for( var key in Midi.LengthToPrecision ) {
+
+        out[ Midi.LengthToPrecision[ key ] ] = key;
+
+    }
+
+    return out;
+
+})();
 
 /**
  * Sequencer order === reverse

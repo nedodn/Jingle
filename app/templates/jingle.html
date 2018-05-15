@@ -1,3 +1,15 @@
 <h2>{{ jingle.name }}</h2>
 
-<p>Creator <b>{{ jingle.account.address }}</b></p>
+<p>Creator <a href="/accounts/{{ jingle.account.address }}"><b>{{ jingle.account.address }}</b></a></p>
+
+<div>
+
+    <a class="btn btn-success btn-buy-piece">Buy Piece</a>
+
+</div>
+
+<br>
+
+<div class="jingle-abc-midi"></div>
+
+<div class="jingle-abc-view"></div>

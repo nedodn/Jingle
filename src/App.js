@@ -51,12 +51,8 @@ app.get( "/create", indexPage );
 app.get( "/composers", indexPage );
 app.get( "/profile", indexPage );
 
-
-app.get( "/accounts/{address}", function( req, res ) {
-
-});
-
 app.get( /\/jingle\/\d*/, indexPage );
+app.get( /\/accounts\/.*/, indexPage );
 
 
 //Main listener
