@@ -3,7 +3,7 @@ pragma solidity ^0.4.21;
 import "./Proxy.sol";
 import "./OwnableProxy.sol";
 
-contract EthmojiProxy is Proxy, OwnableProxy { 
+contract JingleProxy is Proxy, OwnableProxy { 
 
   /**
    * @dev This event will be emitted every time the implementation gets upgraded
@@ -12,7 +12,7 @@ contract EthmojiProxy is Proxy, OwnableProxy {
   event Upgraded(address indexed implementation);
 
   // Storage position of the address of the current implementation
-  bytes32 private constant implementationPosition = keccak256("ethmoji.io.super.duper.awesome.proxy.implementation");
+  bytes32 private constant implementationPosition = keccak256("jingle.implementation.woo.woo.woo.uwu.klrwmf");
 
   /**
    * @dev Tells the address of the current implementation

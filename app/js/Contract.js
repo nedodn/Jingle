@@ -9,6 +9,7 @@ import { default as contract } from "truffle-contract";
 import { Utils } from "./Utils/Utils.js"
 
 import jingle_artifacts from '../../build/contracts/Jingle.json';
+import jingleproxy_artifacts from '../../build/contracts/Jingle.json'
 
 var Contract = function() {
 
@@ -20,6 +21,8 @@ var Contract = function() {
 
     JingleContract.setProvider(web3.currentProvider);
 
+    var proxyAddress = '0x7d71e9b5c4df4d84af5cee226dbee6c4ac643ecf';
+
     scope.loadedJingles = {};
 
 
@@ -29,7 +32,7 @@ var Contract = function() {
 
     scope.getAccount = function( addr, callback ) {
 
-        JingleContract.deployed().then((jingleInstance) => {
+        JingleContract.at(proxyAddress).then((jingleInstance) => {
 
             jingleInstance.tokensOf.call( addr ).then((jingles) => {
 
@@ -63,11 +66,11 @@ var Contract = function() {
 
     scope.getJingles = function( callback ) {
 
-        JingleContract.deployed().then((jingleInstance) => {
+        JingleContract.at(proxyAddress).then((jingleInstance) => {
 
             jingleInstance.totalSupply.call().then((total) => {
 
-                var jingles = Utils.createRange( 1, total );
+                var jingles = Utils.createRange( 1, total.toNumber() );
 
                 async.eachSeries( jingles, function( item, itemCallback ) {
 
@@ -97,7 +100,7 @@ var Contract = function() {
 
         }
 
-        JingleContract.deployed().then((jingleInstance) => {
+        JingleContract.at(proxyAddress).then((jingleInstance) => {
 
             jingleInstance.getMelody.call( id ).then((data) => {
 
@@ -136,7 +139,7 @@ var Contract = function() {
             from: web3.eth.accounts[ 0 ]
         };
 
-        JingleContract.deployed().then((jingleInstance) => {
+        JingleContract.at(proxyAddress).then((jingleInstance) => {
 
             console.log( data );
 
