@@ -35038,7 +35038,7 @@ UI.prototype = {
     pages: {},
     pageMethods: {},
 
-    templates: ["jingle.html", "profile.html", "explore-view.html", "account.html"],
+    templates: ["jingle.html", "profile.html", "explore-view.html", "account.html", "composers.html"],
 
     /**
      * Main setup
@@ -35237,6 +35237,45 @@ UI.prototype = {
 
                 div.innerHTML = template;
             });
+
+            scope.setupComposers(vars.jingles);
+        });
+    },
+
+    /**
+     * Setup composers list template
+     */
+
+    setupComposers: function setupComposers(jingles) {
+
+        var scope = this;
+
+        var accounts = {};
+
+        var jl = jingles.length;
+
+        for (var i = 0; i < jl; ++i) {
+
+            var jingle = jingles[i];
+
+            if (!accounts[jingle.account.address]) {
+
+                accounts[jingle.account.address] = {
+                    address: jingle.account.address,
+                    jingles: []
+                };
+            }
+
+            accounts[jingle.account.address].jingles.push(jingle);
+        }
+
+        var vars = {
+            accounts: (0, _values2.default)(accounts)
+        };
+
+        scope.templater.render("composers.html", vars, function (template) {
+
+            scope.composersDiv.innerHTML = template;
         });
     },
 

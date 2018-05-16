@@ -1,0 +1,18 @@
+<h2>Composers</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Address</th>
+        <th># Jingles</th>
+    </tr>
+
+    {% for account in accounts %}
+
+    <tr>
+        <td><a href="/accounts/{{ account.address }}">{{ account.address }}</a></td>
+        <td>{{ account.jingles.length }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
