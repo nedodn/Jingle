@@ -40,29 +40,46 @@ contract Jingle is Composable {
     /**
     * @dev Mints a base melody
     */
-    function composeBaseMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) checkArguments(pitches, startTimes, durations) public payable whenNotPaused {
+    function composeBaseMelody(int8[] pitches,  
+                               uint256[] startTimes, 
+                               uint256[] durations, 
+                               uint256 _compositionPrice,
+                               int8 _displayPitch,
+                               bytes32 _title) checkArguments(pitches, startTimes, durations) public payable whenNotPaused {
         //must pay registration fee
         require(msg.value >= minCompositionFee);
-
-        createMelody(pitches, startTimes, durations, _compositionPrice);
+        
+        uint256 id = _getNextTokenId();
+        createMelody(pitches, startTimes, durations, _compositionPrice, _displayPitch);
+        tokenIdToTitle[id] = _title;
 
         fees = fees.add(minCompositionFee);
     }
 
-    function composeComposition(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256[] _tokenIds, uint256 _compositionPrice, bytes32 _melodyHash) public payable whenNotPaused {
+    function composeComposition(int8[] pitches,  
+                                uint256[] startTimes, 
+                                uint256[] durations, 
+                                uint256[] _tokenIds, 
+                                uint256 _compositionPrice, 
+                                int8[] _displayPitches,
+                                bytes32 _melodyHash,
+                                bytes32 _title) public payable whenNotPaused {
         //mint base melody with any added notes
         uint256 newId = _getNextTokenId();
-        composeBaseMelody(pitches, startTimes, durations, _compositionPrice);
+        composeBaseMelody(pitches, startTimes, durations, _compositionPrice, _displayPitches[_displayPitches.length - 1], _title);
 
         uint256[] memory newTokenIds = new uint256[](_tokenIds.length + 1);
         
         for (uint256 i = 0; i < _tokenIds.length; ++i) {
             newTokenIds[i] = _tokenIds[i];
+            tokenIdToDisplayPitch[newId].push(_displayPitches[i]);
         }
         newTokenIds[newTokenIds.length - 1] = newId;
+        tokenIdToDisplayPitch[newId].push(_displayPitches[_displayPitches.length - 1]);
 
         //compose composition melody
         Composable.compose(newTokenIds, _melodyHash);
+        tokenIdToTitle[newId] = _title;
 
         // Immediately pay out to layer owners
         for (uint256 x = 0; x < _tokenIds.length; x++) {
@@ -70,7 +87,11 @@ contract Jingle is Composable {
         }
     }
 
-    function createMelody(int8[] pitches,  uint256[] startTimes, uint256[] durations, uint256 _compositionPrice) internal returns (uint256) {
+    function createMelody(int8[] pitches,  
+                          uint256[] startTimes, 
+                          uint256[] durations, 
+                          uint256 _compositionPrice,
+                          int8 _displayPitch) internal returns (uint256) {
         uint256 _id = _getNextTokenId();
 
         //variable to keep track of the last notes start time
@@ -104,6 +125,7 @@ contract Jingle is Composable {
 
         //mint base melody
         _id = Composable.mintTo(msg.sender, _compositionPrice, _melodyHash);
+        tokenIdToDisplayPitch[_id][0] = _displayPitch;
 
         return _id;
     }
@@ -145,6 +167,27 @@ contract Jingle is Composable {
 
         return (_pitches, _startTimes, _durations);
     }
+
+    /**
+    * @dev returns whether or not a token id is a composition
+     */
+     function isAComposition(uint256 _id) public view returns (bool) {
+         return (tokenIdToLayers[_id].length > 1);
+     }
+
+    /**
+    * @dev gets display pitches
+     */
+     function getDisplayPitches(uint256 _id) public view returns (int8[]) {
+         return tokenIdToDisplayPitch[_id];
+     }
+
+     /**
+     * @dev gets a title
+      */
+      function getTitle(uint256 _id) public view returns (bytes32) {
+          return tokenIdToTitle[_id];
+      }
 
 // ----- PRIVATE FUNCTIONS ------------------------------------------------------------------------
 
