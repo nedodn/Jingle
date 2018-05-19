@@ -23,14 +23,17 @@ JingleViewer.prototype = {
 
     templater: null,
 
-    transposition: -40,
+    defaulTransposition: -40,
+
+    jingle: null,
 
     display: function( jingle ) {
 
         var scope = this;
 
         var vars = {
-            jingle: jingle
+            jingle: jingle,
+            Midi: Midi
         };
 
         scope.templater.render( "jingle.html", vars, function( template ) {
@@ -39,7 +42,9 @@ JingleViewer.prototype = {
 
             scope.setJingleEvents();
 
-            scope.renderABCJingle( jingle, scope.transposition );
+            scope.jingle = jingle;
+
+            scope.renderABCJingle( scope.defaulTransposition );
 
         });
 
@@ -49,6 +54,17 @@ JingleViewer.prototype = {
 
         var scope = this;
 
+        var transSelect = scope.domElement.getElementsByClassName( "jingle-transposition" );
+        transSelect = transSelect[ 0 ];
+
+        transSelect.onchange = function() {
+
+            var newTrans = transSelect.options[ transSelect.selectedIndex ].value;
+
+            scope.renderABCJingle( newTrans|0 );
+
+        };
+
     },
 
 
@@ -56,9 +72,10 @@ JingleViewer.prototype = {
      * Render abc to view
      */
 
-    renderABCJingle: function( jingle, transposition ) {
+    renderABCJingle: function( transposition ) {
 
         var scope = this;
+        var jingle = scope.jingle;
 
         var renderArea = scope.domElement.getElementsByClassName( "jingle-abc-view" );
         renderArea = renderArea[ 0 ];
@@ -105,13 +122,13 @@ JingleViewer.prototype = {
 
         beats.push( beat );
 
-        console.log( beats );
-
         var abc = ABCHelper.convertArrayToABC( beats );
         abc = "X: 1\n" +
             "K: C\n" +
+            "V: 1 treble\n" +
+            "V: 2 bass\n" +
             "L: 1/32\n" +
-            ":" + abc;
+            "" + abc;
 
         var midiOpts = {};
 

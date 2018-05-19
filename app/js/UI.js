@@ -276,6 +276,8 @@ UI.prototype = {
         var abc = ABCHelper.convertArrayToABC( beats );
         abc = "X: 1\n" +
             "K: C\n" +
+            "V: 1 treble\n" +
+            "V: 2 bass\n" +
             "L: 1/32\n" +
             ":" + abc;
 

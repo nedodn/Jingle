@@ -13,6 +13,8 @@ var ABCHelper = new function() {
 
     scope.lastSharp = {};
 
+    scope.bassClefDivide = 60;
+
 
     /**
      * Conversion to midi / sheet music plugins
@@ -20,25 +22,32 @@ var ABCHelper = new function() {
 
     scope.convertMidiToABC = function( midiNotes, length ) {
 
-        var abc = scope.convertMidisToABCChord( midiNotes );
+        var abcClefs = scope.convertMidisToABCChord( midiNotes );
 
         var lengthABC = Midi.ABC.NoteLength[ length ];
 
-        abc = abc + lengthABC;
+        abcClefs.treble = abcClefs.treble + lengthABC;
+        abcClefs.bass = abcClefs.bass + lengthABC;
 
-        return abc;
+        return abcClefs;
 
     };
 
     scope.convertMidisToABCChord = function( midiNotes ) {
 
-        var out = [];
+        var out = {
+            treble: [],
+            bass: []
+        };
 
         var ml = midiNotes.length;
 
         if( ml === 0 ) {
 
-            return "z";
+            return {
+                treble: "z",
+                bass: "z"
+            }
 
         }
 
@@ -54,11 +63,33 @@ var ABCHelper = new function() {
 
             var abc = scope.convertMidiToABCNote( note, midiNotes );
 
-            out.push( abc );
+            note >= scope.bassClefDivide
+                ? out.treble.push( abc )
+                : out.bass.push( abc );
 
         }
 
-        return "[" + out.join( "" ) + "]";
+        if( ! out.treble.length ) {
+
+            out.treble = "z";
+
+        } else {
+
+            out.treble = "[" + out.treble.join( "" ) + "]";
+
+        }
+
+        if( ! out.bass.length ) {
+
+            out.bass = "z";
+
+        } else {
+
+            out.bass = "[" + out.bass.join( "" ) + "]";
+
+        }
+
+        return out;
 
     }
 
@@ -141,17 +172,21 @@ var ABCHelper = new function() {
 
         var al = arr.length;
 
-        var output = "";
+        var output = [ "", "" ];
 
         for( var i = 0; i < al; ++ i ) {
 
             var beat = arr[ i ];
 
-            output += scope.convertMidiToABC( beat.notes, beat.length );
+            var clef = scope.convertMidiToABC( beat.notes, beat.length );
+
+            output[ 0 ] += clef.treble;
+            output[ 1 ] += clef.bass;
 
         }
 
-        return output;
+        return "[V:1]" + output[ 0 ] + "\n"
+        + "[V:2]" + output[ 1 ];
 
     };
 

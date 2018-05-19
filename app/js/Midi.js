@@ -357,4 +357,44 @@ Midi.SequenceOrder = (function() {
 Midi.MIN_MIDI_NOTE = 0;
 Midi.MAX_MIDI_NOTE = 127;
 
+
+/**
+ * Starting notes for Jingle transposition
+ */
+
+Midi.StartingNotes = [
+    {
+        id: "C",
+        transposition: -40
+    },
+    {
+        id: "C#",
+        transposition: -39
+    },
+    {
+        id: "D",
+        transposition: -38
+    },
+    {
+        id: "D#",
+        transposition: -37
+    },
+    {
+        id: "E",
+        transposition: -36
+    },
+    {
+        id: "F",
+        transposition: -35
+    },
+    {
+        id: "F#",
+        transposition: -34
+    },
+    {
+        id: "G",
+        transposition: -33
+    },
+];
+
 export { Midi };

@@ -10,6 +10,16 @@
 
 <br>
 
+<h4>Starting Note
+
+<select class="jingle-transposition">
+    {% for startingNote in Midi.StartingNotes %}
+    <option value="{{ startingNote.transposition }}">{{ startingNote.id }}</option>
+    {% endfor %}
+</select>
+
+</h4>
+
 <div class="jingle-abc-midi"></div>
 
 <div class="jingle-abc-view"></div>
