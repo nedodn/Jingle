@@ -303,12 +303,16 @@ UI.prototype = {
 
         scope.Contract.getJingles( function( jingles ) {
 
-            console.log( jingles );
+            var jingles = Object.values( jingles );
+
+            jingles = jingles.sort(function() {
+                return .5 - Math.random();
+            });
 
             var div = document.getElementById( "piece-explore" );
 
             var vars = {
-                jingles: Object.values( jingles )
+                jingles: jingles
             };
 
             scope.templater.render( "explore-view.html", vars, function( template ) {

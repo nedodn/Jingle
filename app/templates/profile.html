@@ -26,14 +26,14 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Kudos</th>
+        <th>Price</th>
     </tr>
 
     {% for jingle in account.jingles %}
     <tr>
         <td><a href="/jingle/{{ jingle.id }}">{{ jingle.id }}</a></td>
         <td><a href="/jingle/{{ jingle.id }}">{{ jingle.name }}</a></td>
-        <td>0</td>
+        <td><b>{{ jingle.price }}</b> ETH</td>
     </tr>
     {% endfor %}
 
