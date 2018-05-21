@@ -1,20 +1,18 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 import "./Composable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 /**
- * @title Jingle
- * Jingle - a contract to mint and compose original jingles
+ * @title Motif
+ * Motif - a contract to mint and compose original Motifs
 */
-contract Jingle is Composable {
+contract Motif is Composable {
     using SafeMath for uint256;
 
     // set proxy as the owner
     bool internal _initialized;
 
-    string public constant NAME = "Jingle";
-    string public constant SYMBOL = "JING";
     uint256 public MAXDURATION;
     address beneficiary;
     uint256 fees;
@@ -26,6 +24,8 @@ contract Jingle is Composable {
         require(startTimes[last] + durations[last] <= MAXDURATION);
         _;
     }
+
+    constructor() ERC721Token("Motif", "MOTIF") public {}
     
     function initialize(address newOwner, uint256 maxDuration, address _beneficiary) public {
         require(!_initialized);
@@ -50,7 +50,7 @@ contract Jingle is Composable {
         require(msg.value >= minCompositionFee);
         
         uint256 id = _getNextTokenId();
-        createMelody(pitches, startTimes, durations, _compositionPrice, _displayPitch);
+         createMelody(pitches, startTimes, durations, _compositionPrice, _displayPitch);
         tokenIdToTitle[id] = _title;
 
         fees = fees.add(minCompositionFee);
@@ -125,28 +125,12 @@ contract Jingle is Composable {
 
         //mint base melody
         _id = Composable.mintTo(msg.sender, _compositionPrice, _melodyHash);
-        tokenIdToDisplayPitch[_id][0] = _displayPitch;
+        tokenIdToDisplayPitch[_id].push(_displayPitch);
 
         return _id;
     }
 
 // ----- EXPOSED METHODS --------------------------------------------------------------------------
-
-    /**
-    * @dev returns the name Jingle
-    * @return string Jingle
-    */
-    function name() public view returns (string) {
-        return NAME;
-    }
-
-    /**
-    * @dev returns the name JING
-    * @return string JING
-    */
-    function symbol() public view returns (string) {
-        return SYMBOL;
-    }
 
     /**
     * @dev gets a melody for a composition

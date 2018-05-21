@@ -1,8 +1,8 @@
-const Jingle = artifacts.require("./contracts/Jingle.sol");
-const JingleProxy = artifacts.require("./contracts/JingleProxy.sol");
+const Motif = artifacts.require("./contracts/Motif.sol");
+const MotifProxy = artifacts.require("./contracts/MotifProxy.sol");
 
 
 module.exports = function(deployer) {
-  deployer.deploy(Jingle);
-  deployer.deploy(JingleProxy);
+  deployer.deploy(Motif);
+  deployer.deploy(MotifProxy);
 };

@@ -39,7 +39,7 @@ contract Composable is ERC721Token, Ownable, PullPayment, Pausable {
 
     mapping (uint256 => Melody) internal tokenIdToMelody;
 
-    mapping (uint256 => int8[]) internal tokenIdToDisplayPitch;
+    mapping (uint256 => int8[]) public tokenIdToDisplayPitch;
 
     mapping (uint256 => bytes32) internal tokenIdToTitle;
 

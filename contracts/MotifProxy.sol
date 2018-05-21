@@ -3,7 +3,7 @@ pragma solidity ^0.4.21;
 import "./Proxy.sol";
 import "./OwnableProxy.sol";
 
-contract JingleProxy is Proxy, OwnableProxy { 
+contract MotifProxy is Proxy, OwnableProxy { 
 
   /**
    * @dev This event will be emitted every time the implementation gets upgraded
