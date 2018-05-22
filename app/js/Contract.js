@@ -112,6 +112,7 @@ var Contract = function() {
                         startTimes: data[ 1 ],
                         durations: data[ 2 ],
                         price: data[ 3 ],
+                        owner: account === web3.eth.accounts[ 0 ],
                         account: {
                             address: account
                         }

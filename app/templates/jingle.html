@@ -23,3 +23,29 @@
 <div class="jingle-abc-midi"></div>
 
 <div class="jingle-abc-view"></div>
+
+{% if jingle.owner %}
+
+<h4>You Own This</h4>
+
+<p>Auction</p>
+
+<form id="auction-form">
+
+    <div class="row">
+
+        <div class="col-md-2">
+            <p>Price</p>
+        </div>
+
+        <div class="col-md-10">
+            <input class="form-control auction-price" placeholder="0.05 ETH">
+        </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-success">Put up for Auction</button>
+
+</form>
+
+{% endif %}
