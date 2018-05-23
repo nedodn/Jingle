@@ -8,8 +8,8 @@ import { default as contract } from "truffle-contract";
 
 import { Utils } from "./Utils/Utils.js"
 
-import jingle_artifacts from '../../build/contracts/Jingle.json';
-import jingleproxy_artifacts from '../../build/contracts/Jingle.json'
+import motif_artifacts from '../../build/contracts/Motif.json';
+import motifproxy_artifacts from '../../build/contracts/Motif.json'
 
 var Contract = function() {
 
@@ -17,11 +17,11 @@ var Contract = function() {
 
     var COMPOSITION_FEE = web3.toWei( 0.01, "ether" );
 
-    var JingleContract = contract( jingle_artifacts );
+    var JingleContract = contract( motif_artifacts );
 
     JingleContract.setProvider(web3.currentProvider);
 
-    var proxyAddress = '0x7d71e9b5c4df4d84af5cee226dbee6c4ac643ecf';
+    var proxyAddress = '0x0eb1ee9fca54ecac712c200ce13fab5aaadd540e';
 
     scope.loadedJingles = {};
 
