@@ -210,6 +210,9 @@ UI.prototype = {
         var scope = this;
 
         var priceInput = document.getElementById( "creator-price" );
+        var motifName = document.getElementById( "creator-title" );
+        var displayPitch = document.getElementById( "creator-display-pitch" );
+
 
         //Main submit
 
@@ -226,6 +229,8 @@ UI.prototype = {
             }
 
             args.price = web3.toWei( priceInput.value, "ether" );
+            args.title = motifName.value;
+            args.display = displayPitch.value;
 
 
             //Launch contract call

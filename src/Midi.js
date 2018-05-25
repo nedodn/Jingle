@@ -347,4 +347,44 @@ Midi.ABC = {
 
 };
 
+
+/**
+ * Starting notes for Jingle transposition
+ */
+
+Midi.StartingNotes = [
+    {
+        id: "C",
+        transposition: 60
+    },
+    {
+        id: "C#",
+        transposition: 61
+    },
+    {
+        id: "D",
+        transposition: 62
+    },
+    {
+        id: "D#",
+        transposition: 63
+    },
+    {
+        id: "E",
+        transposition: 64
+    },
+    {
+        id: "F",
+        transposition: 65
+    },
+    {
+        id: "F#",
+        transposition: 66
+    },
+    {
+        id: "G",
+        transposition: 67
+    },
+];
+
 module.exports = Midi;

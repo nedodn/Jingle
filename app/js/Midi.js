@@ -365,35 +365,35 @@ Midi.MAX_MIDI_NOTE = 127;
 Midi.StartingNotes = [
     {
         id: "C",
-        transposition: -40
+        transposition: 60
     },
     {
         id: "C#",
-        transposition: -39
+        transposition: 61
     },
     {
         id: "D",
-        transposition: -38
+        transposition: 62
     },
     {
         id: "D#",
-        transposition: -37
+        transposition: 63
     },
     {
         id: "E",
-        transposition: -36
+        transposition: 64
     },
     {
         id: "F",
-        transposition: -35
+        transposition: 65
     },
     {
         id: "F#",
-        transposition: -34
+        transposition: 66
     },
     {
         id: "G",
-        transposition: -33
+        transposition: 67
     },
 ];
 

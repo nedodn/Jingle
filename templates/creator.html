@@ -26,6 +26,22 @@
 
     </div>
 
+    <div class="row">
+
+        <div class="col-md-3">
+            <p>Display Pitch</p>
+        </div>
+
+        <div class="col-md-9">
+            <select id="creator-display-pitch">
+                {% for startingNote in Midi.StartingNotes %}
+                <option value="{{ startingNote.transposition }}" >{{ startingNote.id }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+
     <h3>Music Writer</h3>
 
     <div id="sequencer-content">

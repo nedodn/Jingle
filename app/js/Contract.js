@@ -157,6 +157,8 @@ var Contract = function() {
                 data.startTimes,
                 data.durations,
                 data.price,
+                data.display,
+                data.title,
                 trans
             ).then((result) => {
 
