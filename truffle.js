@@ -2,7 +2,7 @@
 require('babel-register')
 
 var HDWalletProvider = require('truffle-hdwallet-provider')
-var mnemonic = ''
+var mnemonic = 'weapon stereo rebuild detect end beef mass egg aim coach isolate truck'
 
 module.exports = {
   networks: {
@@ -16,6 +16,7 @@ module.exports = {
         return new HDWalletProvider(mnemonic, 'https://rinkeby.infura.io/mXHEyD5OI3wXAnDE6uT4')
       },
       network_id: 4,
+      gasPrice: 6000000000
     } 
   }
 };

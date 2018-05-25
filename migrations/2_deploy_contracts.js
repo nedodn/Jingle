@@ -1,5 +1,6 @@
 const Motif = artifacts.require("./contracts/Motif.sol");
 const MotifProxy = artifacts.require("./contracts/MotifProxy.sol");
+const Auction = artifacts.require("./contracts/AuctionInstance.sol");
 
 let abi = require('ethereumjs-abi');
 let min = 10000000000000000;
@@ -18,9 +19,17 @@ module.exports = function(deployer, network, accounts) {
 
       await instance2.upgradeToAndCall(instance1.address, initializeData, { from: accounts[0] });
       instance2 = Motif.at(instance2.address);
-      await instance2.composeBaseMelody([100, 102, 104, 96, 93], [0, 1, 2, 3, 4], [1, 1, 1, 1, 1], min, 40, 'First', { value: min })
+      await instance2.composeBaseMelody([100, 102, 104, 96], [0, 4, 8, 12], [16, 16, 16, 16], min, 40, 'First', { value: min })
       let x = await instance2.getMelody(1);
       console.log(x);
+
+      deployer.deploy(Auction, instance2.address).then(async (instance3) => {
+        await instance2.approve(instance3.address, 1);
+        await instance3.createAuction(1, min);
+        
+        let test = await instance3.getAuction(1);
+        console.log(test);
+      })
     })
   })
 };
