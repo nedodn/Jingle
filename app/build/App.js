@@ -11020,28 +11020,28 @@ Midi.MAX_MIDI_NOTE = 127;
 
 Midi.StartingNotes = [{
     id: "C",
-    transposition: -40
+    transposition: 60
 }, {
     id: "C#",
-    transposition: -39
+    transposition: 61
 }, {
     id: "D",
-    transposition: -38
+    transposition: 62
 }, {
     id: "D#",
-    transposition: -37
+    transposition: 63
 }, {
     id: "E",
-    transposition: -36
+    transposition: 64
 }, {
     id: "F",
-    transposition: -35
+    transposition: 65
 }, {
     id: "F#",
-    transposition: -34
+    transposition: 66
 }, {
     id: "G",
-    transposition: -33
+    transposition: 67
 }];
 
 exports.Midi = Midi;
@@ -34142,9 +34142,14 @@ var Contract = function Contract() {
 
                         jingle.price = web3.fromWei(price, "ether");
 
-                        scope.loadedJingles[id] = jingle;
+                        jingleInstance.getTitle.call(id).then(function (title) {
 
-                        callback(scope.loadedJingles[id]);
+                            jingle.title = web3.toAscii(title);
+
+                            scope.loadedJingles[id] = jingle;
+
+                            callback(scope.loadedJingles[id]);
+                        });
                     });
                 });
             });
@@ -34166,7 +34171,7 @@ var Contract = function Contract() {
 
             console.log(data);
 
-            jingleInstance.composeBaseMelody(data.pitches, data.startTimes, data.durations, data.price, trans).then(function (result) {
+            jingleInstance.composeBaseMelody(data.pitches, data.startTimes, data.durations, data.price, data.display, data.title, trans).then(function (result) {
 
                 callback(result);
             });
@@ -34210,7 +34215,7 @@ JingleViewer.prototype = {
 
     templater: null,
 
-    defaulTransposition: -40,
+    defaulTransposition: 60,
 
     jingle: null,
 
@@ -34258,6 +34263,8 @@ JingleViewer.prototype = {
 
         var scope = this;
         var jingle = scope.jingle;
+
+        var transposition = transposition - 100;
 
         var renderArea = scope.domElement.getElementsByClassName("jingle-abc-view");
         renderArea = renderArea[0];
@@ -35146,12 +35153,12 @@ UI.prototype = {
             "explore": scope.exploreDiv,
             "composers": scope.composersDiv,
             "profile": scope.profileDiv,
-            "jingle": scope.jingleDiv,
+            "motif": scope.jingleDiv,
             "accounts": scope.accountDiv
         };
 
         scope.pageMethods = {
-            "jingle": scope.showJingle,
+            "motif": scope.showJingle,
             "accounts": scope.showAccount
         };
 
@@ -35220,6 +35227,8 @@ UI.prototype = {
         var scope = this;
 
         var priceInput = document.getElementById("creator-price");
+        var motifName = document.getElementById("creator-title");
+        var displayPitch = document.getElementById("creator-display-pitch");
 
         //Main submit
 
@@ -35235,12 +35244,14 @@ UI.prototype = {
             }
 
             args.price = web3.toWei(priceInput.value, "ether");
+            args.title = motifName.value;
+            args.display = displayPitch.value;
 
             //Launch contract call
 
             scope.Contract.create(args, function () {
 
-                alert("CREATED JINGLE");
+                alert("CREATED MOTIF");
             });
         };
 
@@ -44385,7 +44396,7 @@ module.exports = {"$schema":"http://json-schema.org/draft-06/schema#","$id":"htt
 /* 202 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["truffle-contract-schema@2.0.0","/Users/nathanieloden/Documents/GitHub/jingle2/Jingle"]],"_development":true,"_from":"truffle-contract-schema@2.0.0","_id":"truffle-contract-schema@2.0.0","_inBundle":false,"_integrity":"sha512-nLlspmu1GKDaluWksBwitHi/7Z3IpRjmBYeO9N+T1nVJD2V4IWJaptCKP1NqnPiJA+FChB7+F7pI6Br51/FtXQ==","_location":"/truffle-contract-schema","_phantomChildren":{"ms":"2.0.0"},"_requested":{"type":"version","registry":true,"raw":"truffle-contract-schema@2.0.0","name":"truffle-contract-schema","escapedName":"truffle-contract-schema","rawSpec":"2.0.0","saveSpec":null,"fetchSpec":"2.0.0"},"_requiredBy":["/truffle-contract"],"_resolved":"https://registry.npmjs.org/truffle-contract-schema/-/truffle-contract-schema-2.0.0.tgz","_spec":"2.0.0","_where":"/Users/nathanieloden/Documents/GitHub/jingle2/Jingle","author":{"name":"Tim Coulter","email":"tim.coulter@consensys.net"},"bugs":{"url":"https://github.com/trufflesuite/truffle-schema/issues"},"dependencies":{"ajv":"^5.1.1","crypto-js":"^3.1.9-1","debug":"^3.1.0"},"description":"JSON schema for contract artifacts","devDependencies":{"mocha":"^3.2.0","solc":"^0.4.16"},"homepage":"https://github.com/trufflesuite/truffle-schema#readme","keywords":["ethereum","json","schema","contract","artifacts"],"license":"MIT","main":"index.js","name":"truffle-contract-schema","repository":{"type":"git","url":"git+https://github.com/trufflesuite/truffle-schema.git"},"scripts":{"test":"mocha"},"version":"2.0.0"}
+module.exports = {"_args":[["truffle-contract-schema@2.0.0","/media/chuckfairy/Rosemary/Sources/Jingle"]],"_development":true,"_from":"truffle-contract-schema@2.0.0","_id":"truffle-contract-schema@2.0.0","_inBundle":false,"_integrity":"sha512-nLlspmu1GKDaluWksBwitHi/7Z3IpRjmBYeO9N+T1nVJD2V4IWJaptCKP1NqnPiJA+FChB7+F7pI6Br51/FtXQ==","_location":"/truffle-contract-schema","_phantomChildren":{"ms":"2.0.0"},"_requested":{"type":"version","registry":true,"raw":"truffle-contract-schema@2.0.0","name":"truffle-contract-schema","escapedName":"truffle-contract-schema","rawSpec":"2.0.0","saveSpec":null,"fetchSpec":"2.0.0"},"_requiredBy":["/truffle-contract"],"_resolved":"https://registry.npmjs.org/truffle-contract-schema/-/truffle-contract-schema-2.0.0.tgz","_spec":"2.0.0","_where":"/media/chuckfairy/Rosemary/Sources/Jingle","author":{"name":"Tim Coulter","email":"tim.coulter@consensys.net"},"bugs":{"url":"https://github.com/trufflesuite/truffle-schema/issues"},"dependencies":{"ajv":"^5.1.1","crypto-js":"^3.1.9-1","debug":"^3.1.0"},"description":"JSON schema for contract artifacts","devDependencies":{"mocha":"^3.2.0","solc":"^0.4.16"},"homepage":"https://github.com/trufflesuite/truffle-schema#readme","keywords":["ethereum","json","schema","contract","artifacts"],"license":"MIT","main":"index.js","name":"truffle-contract-schema","repository":{"type":"git","url":"git+https://github.com/trufflesuite/truffle-schema.git"},"scripts":{"test":"mocha"},"version":"2.0.0"}
 
 /***/ }),
 /* 203 */

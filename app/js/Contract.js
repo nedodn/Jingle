@@ -122,9 +122,15 @@ var Contract = function() {
 
                         jingle.price = web3.fromWei( price, "ether" );
 
-                        scope.loadedJingles[ id ] = jingle
+                        jingleInstance.getTitle.call( id ).then( (title) => {
 
-                        callback( scope.loadedJingles[ id ] );
+                            jingle.title = web3.toAscii( title );
+
+                            scope.loadedJingles[ id ] = jingle
+
+                            callback( scope.loadedJingles[ id ] );
+
+                        });
 
                     });
 

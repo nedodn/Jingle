@@ -51,7 +51,7 @@ app.get( "/create", indexPage );
 app.get( "/composers", indexPage );
 app.get( "/profile", indexPage );
 
-app.get( /\/jingle\/\d*/, indexPage );
+app.get( /\/motif\/\d*/, indexPage );
 app.get( /\/accounts\/.*/, indexPage );
 
 

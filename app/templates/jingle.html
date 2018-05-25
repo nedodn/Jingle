@@ -2,11 +2,15 @@
 
 <p>Creator <a href="/accounts/{{ jingle.account.address }}"><b>{{ jingle.account.address }}</b></a></p>
 
+{% if not jingle.owner %}
+
 <div>
 
-    <a class="btn btn-success btn-buy-piece">Buy Piece</a>
+    <a class="btn btn-success btn-buy-piece">Buy Piece {{ jingle.price }} ETH</a>
 
 </div>
+
+{% endif %}
 
 <br>
 

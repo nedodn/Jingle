@@ -23,7 +23,7 @@ JingleViewer.prototype = {
 
     templater: null,
 
-    defaulTransposition: -40,
+    defaulTransposition: 60,
 
     jingle: null,
 
@@ -76,6 +76,8 @@ JingleViewer.prototype = {
 
         var scope = this;
         var jingle = scope.jingle;
+
+        var transposition = transposition - 100;
 
         var renderArea = scope.domElement.getElementsByClassName( "jingle-abc-view" );
         renderArea = renderArea[ 0 ];

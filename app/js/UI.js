@@ -123,12 +123,12 @@ UI.prototype = {
             "explore": scope.exploreDiv,
             "composers": scope.composersDiv,
             "profile": scope.profileDiv,
-            "jingle": scope.jingleDiv,
+            "motif": scope.jingleDiv,
             "accounts": scope.accountDiv,
         };
 
         scope.pageMethods = {
-            "jingle": scope.showJingle,
+            "motif": scope.showJingle,
             "accounts": scope.showAccount
         };
 
@@ -237,7 +237,7 @@ UI.prototype = {
 
             scope.Contract.create( args, function() {
 
-                alert( "CREATED JINGLE" );
+                alert( "CREATED MOTIF" );
 
             });
 
