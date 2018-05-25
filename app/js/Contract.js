@@ -21,7 +21,7 @@ var Contract = function() {
 
     JingleContract.setProvider(web3.currentProvider);
 
-    var proxyAddress = '0x0eb1ee9fca54ecac712c200ce13fab5aaadd540e';
+    var proxyAddress = '0x56253f1dc207e864ebac7315dcbddddb50530e35';
 
     scope.loadedJingles = {};
 
