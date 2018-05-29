@@ -9,7 +9,7 @@ contract OwnableProxy {
   event ProxyOwnershipTransferred(address previousOwner, address newOwner);
 
   // Storage position of the owner of the contract
-  bytes32 private constant ownerPosition = keccak256("ethmoji.io.super.duper.awesome.proxy.owner");
+  bytes32 private constant ownerPosition = keccak256("");
 
   /**
   * @dev the constructor sets the original owner of the contract to the sender account.
