@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server",
-    "rebuild": "bash bin/rebuild.sh"
+    "rebuild": "bash bin/rebuild.sh",
+    "start": "bash bin/start.sh"
   },
   "author": "Jinglers",
   "license": "MIT",
