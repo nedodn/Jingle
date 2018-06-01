@@ -8,3 +8,9 @@ Run `npm start`
 Navigate to http://localhost:30420
 
 The current contracts are located on the Rinkeby Test Network so in order to use you must have Metamask connected to the Rinkeby Network
+
+
+## Building
+
+- `npm run build` build App.js
+- `truffle migrate --reset` for local development
