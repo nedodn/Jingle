@@ -133,7 +133,8 @@ UI.prototype = {
         };
 
         scope.templater = new Templater({
-            templates: scope.templates
+            templates: scope.templates,
+            autoload: false
         });
 
         scope.JingleViewer = new JingleViewer(
@@ -141,13 +142,22 @@ UI.prototype = {
             scope.templater
         );
 
-        scope.templater.compile( function() {
 
-            scope.setupProfile();
-            scope.setupCreator();
-            scope.setupExplore();
+        //Contract ready up
+
+        scope.Contract.on( "load", function() {
+
+            scope.templater.compile( function() {
+
+                scope.setupProfile();
+                scope.setupCreator();
+                scope.setupExplore();
+
+            });
 
         });
+
+        scope.Contract.load();
 
     },
 

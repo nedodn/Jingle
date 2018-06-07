@@ -11,12 +11,16 @@ var Navigator = function( App ) {
 
     scope.linkDiv = document.getElementById( "header-links" );
 
+    scope.currentRoute;
+
 
     /**
      * Methods
      */
 
     scope.route = function( methodFull ) {
+
+        scope.currentRoute = methodFull;
 
         var methodSplit = methodFull.split( "/" );
         var method = methodSplit[ methodSplit.length - 1 ];
@@ -43,14 +47,6 @@ var Navigator = function( App ) {
 
         }
 
-
-        switch( method ) {
-
-            case "create":
-                break;
-
-        }
-
     };
 
 
@@ -66,17 +62,13 @@ var Navigator = function( App ) {
 
             var anchor = e.target;
 
-            console.dir( anchor );
-
-            e.preventDefault();
-
             if( anchor.hostname !== window.location.hostname ) {
-
-                console.dir( anchor );
 
                 return;
 
             }
+
+            e.preventDefault();
 
             scope.route( anchor.href );
 
@@ -92,6 +84,18 @@ var Navigator = function( App ) {
     scope.route( window.location.href );
 
     scope.listen();
+
+
+    //Account page fix
+    //@TODO solidity func calls in Contract
+
+    App.Contract.on( "load", function() {
+
+        console.log( "TEST" );
+
+        scope.route( scope.currentRoute );
+
+    });
 
 };
 

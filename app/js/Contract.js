@@ -7,6 +7,7 @@ import { default as async } from "async";
 import { default as contract } from "truffle-contract";
 
 import { Utils } from "./Utils/Utils.js"
+import { EventDispatcher } from "./Utils/EventDispatcher.js"
 
 import motif_artifacts from '../../build/contracts/Motif.json';
 import motifproxy_artifacts from '../../build/contracts/Motif.json'
@@ -25,7 +26,12 @@ var Contract = function() {
 
     var proxyAddress = '0x56253f1dc207e864ebac7315dcbddddb50530e35';
 
-    scope.loadedJingles = {};
+    scope.loadedJingles = null;
+
+    //Hack to get tokensOf in
+    //@TODO use contract calls legit
+
+    scope.tokensOf = {};
 
 
     /**
@@ -33,14 +39,17 @@ var Contract = function() {
      * @TODO
      */
 
-    scope.load = function( callback ) {
+    scope.load = function() {
 
         JingleContract.at(proxyAddress).then((ji) => {
 
             jingleInstance = ji;
 
-            callback();
+            scope.getJingles(function() {
 
+                scope.dispatch({ type: "load" });
+
+            });
 
         });
 
@@ -49,65 +58,56 @@ var Contract = function() {
 
     /**
      * Contract API
+     * @TODO use solidity funcs ERC721
      */
 
     scope.getAccount = function( addr, callback ) {
 
-        JingleContract.at(proxyAddress).then((jingleInstance) => {
+        var jingles = scope.tokensOf[ addr ] || [];
 
-            jingleInstance.tokensOf.call( addr ).then((jingles) => {
+        var account = {
+            address: addr,
+            name: "Not Implemented",
+            jingles: jingles
+        };
 
-                var cleanJingles = [];
+        callback( account );
 
-                async.eachSeries( jingles, function( item, itemCallback ) {
-
-                    scope.getJingle( item.toNumber(), function( jingle ) {
-
-                        cleanJingles.push( jingle );
-
-                        itemCallback();
-
-                    });
-
-                }, function() {
-
-                    var account = {
-                        address: addr,
-                        name: "Not Implemented",
-                        jingles: cleanJingles
-                    };
-
-                    callback( account );
-
-                });
-
-            });
-        });
     };
+
+
+    /**
+     * Load or get all jingle
+     */
 
     scope.getJingles = function( callback ) {
 
-        JingleContract.at(proxyAddress).then((jingleInstance) => {
+        if( scope.loadedJingles !== null ) {
 
-            jingleInstance.totalSupply.call().then((total) => {
+            callback( scope.loadedJingles );
+            return;
 
-                var jingles = Utils.createRange( 1, total.toNumber() );
+        }
 
-                async.eachSeries( jingles, function( item, itemCallback ) {
+        scope.loadedJingles = {};
 
-                    scope.getJingle( item, function( jingle ) {
+        jingleInstance.totalSupply.call().then((total) => {
 
-                        itemCallback();
+            var jingles = Utils.createRange( 1, total.toNumber() );
 
-                    });
+            async.eachSeries( jingles, function( item, itemCallback ) {
 
-                }, function() {
+                scope.getJingle( item, function( jingle ) {
 
-                    callback( scope.loadedJingles );
+                    itemCallback();
 
                 });
 
-            })
+            }, function() {
+
+                callback( scope.loadedJingles );
+
+            });
 
         });
 
@@ -121,44 +121,51 @@ var Contract = function() {
 
         }
 
-        JingleContract.at(proxyAddress).then((jingleInstance) => {
+        jingleInstance.getMelody.call( id ).then((data) => {
 
-            jingleInstance.getMelody.call( id ).then((data) => {
+            jingleInstance.ownerOf.call( id ).then((account) => {
 
-                jingleInstance.ownerOf.call( id ).then((account) => {
+                var jingle = {
+                    id: id,
+                    pitches: data[ 0 ],
+                    startTimes: data[ 1 ],
+                    durations: data[ 2 ],
+                    price: data[ 3 ],
+                    owner: account === web3.eth.accounts[ 0 ],
+                    account: {
+                        address: account
+                    }
+                };
 
-                    var jingle = {
-                        id: id,
-                        pitches: data[ 0 ],
-                        startTimes: data[ 1 ],
-                        durations: data[ 2 ],
-                        price: data[ 3 ],
-                        owner: account === web3.eth.accounts[ 0 ],
-                        account: {
-                            address: account
+                jingleInstance.getCompositionPrice.call( id ).then( (price) => {
+
+                    jingle.price = web3.fromWei( price, "ether" );
+
+                    jingleInstance.getTitle.call( id ).then( (title) => {
+
+                        jingle.title = web3.toAscii( title );
+
+                        scope.loadedJingles[ id ] = jingle
+
+                        //Add to tokensOF
+
+                        if( ! scope.tokensOf[ account ] ) {
+
+                            scope.tokensOf[ account ] = [];
+
                         }
-                    };
 
-                    jingleInstance.getCompositionPrice.call( id ).then( (price) => {
+                        scope.tokensOf[ account ].push( jingle );
 
-                        jingle.price = web3.fromWei( price, "ether" );
-
-                        jingleInstance.getTitle.call( id ).then( (title) => {
-
-                            jingle.title = web3.toAscii( title );
-
-                            scope.loadedJingles[ id ] = jingle
-
-                            callback( scope.loadedJingles[ id ] );
-
-                        });
+                        callback( scope.loadedJingles[ id ] );
 
                     });
 
-
                 });
 
+
             });
+
         });
 
     };
@@ -175,26 +182,26 @@ var Contract = function() {
             from: web3.eth.accounts[ 0 ]
         };
 
-        JingleContract.at(proxyAddress).then((jingleInstance) => {
+        jingleInstance.composeBaseMelody(
+            data.pitches,
+            data.startTimes,
+            data.durations,
+            data.price,
+            data.display,
+            data.title,
+            trans
+        ).then((result) => {
 
-            console.log( data );
+            callback( result );
 
-            jingleInstance.composeBaseMelody(
-                data.pitches,
-                data.startTimes,
-                data.durations,
-                data.price,
-                data.display,
-                data.title,
-                trans
-            ).then((result) => {
-
-                callback( result );
-
-            });
         });
 
     };
+
+
+    //Extend from event dispatcher
+
+    EventDispatcher.prototype.apply( scope );
 
 };
 
