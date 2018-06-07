@@ -57,13 +57,13 @@ var EditorHelper = new function() {
         var lastNotePitch = 0;
         var lastNote = 0;
 
-        console.log( beats );
-
         for( var i = 0; i < bl; ++ i ) {
 
             var beat = beats[ i ];
 
-            var nl = beat.notes.length;
+            var notes = beat.notes.reverse();
+
+            var nl = notes.length;
 
             var length = Midi.LengthToPrecision[ beat.length ];
 
@@ -77,7 +77,7 @@ var EditorHelper = new function() {
 
             for( var t = 0; t < nl; ++ t ) {
 
-                var note = beat.notes[ t ];
+                var note = notes[ t ];
 
                 if( transposition === 0 ) {
 
@@ -103,7 +103,7 @@ var EditorHelper = new function() {
             durations: durations
         };
 
-    }
+    };
 
 
     /**
