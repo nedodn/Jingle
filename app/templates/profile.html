@@ -21,6 +21,8 @@
 
 <h4>Motifs</h4>
 
+{% if account.jingles.length %}
+
 <table class="table table-bordered">
 
     <tr>
@@ -38,3 +40,9 @@
     {% endfor %}
 
 </table>
+
+{% else %}
+
+<p>You need to create a motif! <a href="/create">Click here</a> or "Create" to start creating</p>
+
+{% endif %}
