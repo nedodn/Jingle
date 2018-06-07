@@ -3,6 +3,10 @@ A user can create a single base melody and stores it as an ERC721 token. The mel
 ## To Run
 Download the project
 
+Run `npm install`
+
+Run `npm run build`
+
 Run `npm start`
 
 Navigate to http://localhost:30420
