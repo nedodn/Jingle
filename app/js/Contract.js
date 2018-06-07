@@ -21,9 +21,30 @@ var Contract = function() {
 
     JingleContract.setProvider(web3.currentProvider);
 
+    var jingleInstance = null;
+
     var proxyAddress = '0x56253f1dc207e864ebac7315dcbddddb50530e35';
 
     scope.loadedJingles = {};
+
+
+    /**
+     * Load deployed
+     * @TODO
+     */
+
+    scope.load = function( callback ) {
+
+        JingleContract.at(proxyAddress).then((ji) => {
+
+            jingleInstance = ji;
+
+            callback();
+
+
+        });
+
+    };
 
 
     /**

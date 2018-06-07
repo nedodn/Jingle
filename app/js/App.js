@@ -18,6 +18,7 @@ var App = function() {
 
     scope.Navigator = new Navigator( scope );
 
+
     //Check if even installed
 
     if( typeof( web3 ) === "undefined" && typeof( web3 ) === "undefined" ) {

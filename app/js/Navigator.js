@@ -55,16 +55,34 @@ var Navigator = function( App ) {
 
 
     /**
-     * Set events
+     * Listener
      */
 
-    scope.linkDiv.onclick = function( e ) {
+    scope.listen = function() {
 
-        if( e.target.tagName === "A" ) {
+        document.body.addEventListener( "click", function( e ) {
 
-            scope.route( e.target.href );
+            if( e.target.tagName !== "A" ) { return; }
 
-        }
+            var anchor = e.target;
+
+            console.dir( anchor );
+
+            e.preventDefault();
+
+            if( anchor.hostname !== window.location.hostname ) {
+
+                console.dir( anchor );
+
+                return;
+
+            }
+
+            scope.route( anchor.href );
+
+            window.history.pushState( "", "", anchor.href );
+
+        }, false );
 
     };
 
@@ -72,6 +90,8 @@ var Navigator = function( App ) {
     //Init route
 
     scope.route( window.location.href );
+
+    scope.listen();
 
 };
 

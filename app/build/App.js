@@ -13203,8 +13203,6 @@ var EditorHelper = new function () {
         var lastNotePitch = 0;
         var lastNote = 0;
 
-        console.log(beats);
-
         for (var i = 0; i < bl; ++i) {
 
             var beat = beats[i];
@@ -13212,8 +13210,6 @@ var EditorHelper = new function () {
             var notes = beat.notes.reverse();
 
             var nl = notes.length;
-
-            console.log(notes);
 
             var length = _Midi.Midi.LengthToPrecision[beat.length];
 
@@ -13242,8 +13238,6 @@ var EditorHelper = new function () {
 
             lastDivide += length;
         }
-
-        console.log(midi);
 
         return {
             pitches: midi,
@@ -34059,9 +34053,26 @@ var Contract = function Contract() {
 
     JingleContract.setProvider(web3.currentProvider);
 
+    var jingleInstance = null;
+
     var proxyAddress = '0x56253f1dc207e864ebac7315dcbddddb50530e35';
 
     scope.loadedJingles = {};
+
+    /**
+     * Load deployed
+     * @TODO
+     */
+
+    scope.load = function (callback) {
+
+        JingleContract.at(proxyAddress).then(function (ji) {
+
+            jingleInstance = ji;
+
+            callback();
+        });
+    };
 
     /**
      * Contract API
@@ -34401,20 +34412,41 @@ var Navigator = function Navigator(App) {
     };
 
     /**
-     * Set events
+     * Listener
      */
 
-    scope.linkDiv.onclick = function (e) {
+    scope.listen = function () {
 
-        if (e.target.tagName === "A") {
+        document.body.addEventListener("click", function (e) {
 
-            scope.route(e.target.href);
-        }
+            if (e.target.tagName !== "A") {
+                return;
+            }
+
+            var anchor = e.target;
+
+            console.dir(anchor);
+
+            e.preventDefault();
+
+            if (anchor.hostname !== window.location.hostname) {
+
+                console.dir(anchor);
+
+                return;
+            }
+
+            scope.route(anchor.href);
+
+            window.history.pushState("", "", anchor.href);
+        }, false);
     };
 
     //Init route
 
     scope.route(window.location.href);
+
+    scope.listen();
 };
 
 exports.Navigator = Navigator;
